@@ -5,7 +5,4 @@
 -- Similarly, there is check for "checking" what something does (or more importantly, what it takes in, and spits out)
 #check Nat
 #check Nat.add
-
-variable (a : ℕ)
-#check a
 #check Nat.add_assoc
