@@ -71,13 +71,43 @@ example : x ⊔ y = y ⊔ x := by
     apply le_sup_left
 
 example : x ⊔ y ⊔ z = x ⊔ (y ⊔ z) := by
-  sorry
+  apply le_antisymm
+  . apply sup_le
+    . trans x ⊔ y
+      . apply sup_le
+        apply le_sup_left
+        apply le_sup_right
+      . apply sup_le
+        apply le_sup_left
+        . trans y ⊔ z
+          apply le_sup_left
+          apply le_sup_right
+    . trans y ⊔ z
+      apply le_sup_right
+      apply le_sup_right
+  . apply sup_le
+    . trans x ⊔ y
+      apply le_sup_left
+      apply le_sup_left
+    apply sup_le
+    . trans x ⊔ y
+      apply le_sup_right
+      apply le_sup_left
+    apply le_sup_right
 
 theorem absorb1 : x ⊓ (x ⊔ y) = x := by
-  sorry
+  apply le_antisymm
+  apply inf_le_left
+  apply le_inf
+  apply le_refl
+  apply le_sup_left
 
 theorem absorb2 : x ⊔ x ⊓ y = x := by
-  sorry
+  apply le_antisymm
+  apply sup_le
+  apply le_refl
+  apply inf_le_left
+  apply le_sup_left
 
 end
 
