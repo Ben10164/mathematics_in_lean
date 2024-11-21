@@ -164,12 +164,28 @@ variable (a b c : R)
 #check (mul_nonneg : 0 ≤ a → 0 ≤ b → 0 ≤ a * b)
 
 example (h : a ≤ b) : 0 ≤ b - a := by
-  sorry
+  rw [← sub_self a]
+  rw [sub_eq_add_neg]
+  rw [sub_eq_add_neg]
+  rw [add_comm]
+  rw [add_comm b]
+  apply add_le_add_left
+  apply h
 
 example (h: 0 ≤ b - a) : a ≤ b := by
-  sorry
+  rw [← add_zero a]
+  rw [← sub_add_cancel b a]
+  rw [sub_add_comm]
+  rw [sub_add_eq_add_sub]
+  rw [add_sub_assoc]
+  apply add_le_add_left
+  apply h
 
 example (h : a ≤ b) (h' : 0 ≤ c) : a * c ≤ b * c := by
+  rw [← add_zero c]
+  rw [← sub_self a]
+
+
   sorry
 
 end
