@@ -125,11 +125,32 @@ section
 variable {α : Type*} [Lattice α]
 variable (a b c : α)
 
+#check (inf_comm a b)
+#check (inf_assoc a b c)
+#check (sup_comm a b)
+#check (sup_assoc a b c)
+
 example (h : ∀ x y z : α, x ⊓ (y ⊔ z) = x ⊓ y ⊔ x ⊓ z) : a ⊔ b ⊓ c = (a ⊔ b) ⊓ (a ⊔ c) := by
-  sorry
+  rw [h]
+  rw [inf_comm (a ⊔ b)]
+  rw [absorb1]
+  rw [inf_comm (a ⊔ b)]
+  rw [h]
+  rw [← sup_assoc]
+  rw [inf_comm c a]
+  rw [absorb2]
+  rw [inf_comm]
 
 example (h : ∀ x y z : α, x ⊔ y ⊓ z = (x ⊔ y) ⊓ (x ⊔ z)) : a ⊓ (b ⊔ c) = a ⊓ b ⊔ a ⊓ c := by
-  sorry
+  rw [h]
+  rw [sup_comm (a ⊓ b)]
+  rw [absorb2]
+  rw [sup_comm]
+  rw [sup_comm (a ⊓ b)]
+  rw [h]
+  rw [← inf_assoc]
+  rw [sup_comm c a]
+  rw [absorb1]
 
 end
 
