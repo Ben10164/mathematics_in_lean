@@ -8,6 +8,7 @@ package mil where
     ⟨`relaxedAutoImplicit, false⟩]
 
 @[default_target]
+lean_lib my_files where
 lean_lib MIL where
 
 require mathlib from git "https://github.com/leanprover-community/mathlib4"@"v4.13.0"
