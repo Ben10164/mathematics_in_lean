@@ -1,21 +1,18 @@
-.PHONY: all clean build cache release
+.PHONY: all release update_version
 
 all: release
 
-clean:
-	lake clean
-
-build: cache
-	lake build
-
-cache:
-	lake exe cache get
-
 VERSION := $(shell grep '^version' lakefile.toml | sed 's/version = "\(.*\)"/\1/')
 
-release:
+release: update_version
 	git add .
 	git commit -m "$(VERSION)"
 	gh release create $(VERSION)
 	lake upload $(VERSION)
 	git push
+
+update_version:
+	echo "Current version is $(VERSION)."
+	@read -p "Enter the new version: " VERSION; \
+	sed -i.bak "s/^version = \".*\"/version = \"$$VERSION\"/" lakefile.toml; \
+	echo "Updated version to $$VERSION in config.toml"
