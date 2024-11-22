@@ -11,11 +11,9 @@ build: cache
 cache:
 	lake exe cache get
 
+VERSION := $(shell grep '^version' lakefile.toml | sed 's/version = "\(.*\)"/\1/')
+
 release:
-	@if [ -z "$(VERSION)" ]; then \
-    	echo "Error: VERSION is not set. Usage: make release VERSION=<version>"; \
-    	exit 1; \
-	fi
 	git add .
 	git commit -m "$(VERSION)"
 	gh release create $(VERSION)
