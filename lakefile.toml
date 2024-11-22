@@ -1,0 +1,20 @@
+name = "ben_mil"
+version = "0.1.0"
+defaultTargets = ["my_files"]
+
+[[lean_lib]]
+name = "my_files"
+pp.unicode.fun = true
+autoImplicit = false
+relaxedAutoImplicit = false
+
+[[lean_lib]]
+name = "MIL"
+pp.unicode.fun = true
+autoImplicit = false
+relaxedAutoImplicit = false
+
+[[require]]
+name = "mathlib"
+git = "https://github.com/leanprover-community/mathlib4"
+rev = "v4.13.0"
