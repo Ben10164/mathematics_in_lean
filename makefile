@@ -19,4 +19,4 @@ release:
 	gh release create $(VERSION)
 	git add .
 	git commit -m "$(VERSION)"
-	lake publish $(VERSION)
+	lake upload $(VERSION)
