@@ -16,7 +16,8 @@ release:
     	echo "Error: VERSION is not set. Usage: make release VERSION=<version>"; \
     	exit 1; \
 	fi
-	gh release create $(VERSION)
 	git add .
 	git commit -m "$(VERSION)"
+	gh release create $(VERSION)
 	lake upload $(VERSION)
+	git push
