@@ -15,4 +15,5 @@ update_version:
 	echo "Current version is $(VERSION)."
 	@read -p "Enter the new version: " VERSION; \
 	sed -i.bak "s/^version = \".*\"/version = \"$$VERSION\"/" lakefile.toml; \
-	echo "Updated version to $$VERSION in config.toml"
+	echo "Updated version to $$VERSION in lakefile.toml"
+	rm lakefile.toml.bak
