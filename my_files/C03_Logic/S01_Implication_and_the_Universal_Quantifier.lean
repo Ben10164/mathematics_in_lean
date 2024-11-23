@@ -135,20 +135,39 @@ example (f : ℝ → ℝ) (h : Monotone f) : ∀ {a b}, a ≤ b → f a ≤ f b 
 section
 variable (f g : ℝ → ℝ)
 
+-- same as
 example (mf : Monotone f) (mg : Monotone g) : Monotone fun x ↦ f x + g x := by
   intro a b aleb
-  apply add_le_add
-  apply mf aleb
-  apply mg aleb
-
+  dsimp
+  . apply add_le_add
+    . apply mf
+      apply aleb
+    . apply mg
+      apply aleb
+-- same as
 example (mf : Monotone f) (mg : Monotone g) : Monotone fun x ↦ f x + g x :=
   fun a b aleb ↦ add_le_add (mf aleb) (mg aleb)
 
+example {c : ℝ} (mf : Monotone f) (nnc : 0 ≤ c) : Monotone fun x ↦ c * f x := by
+  intro a b aleb
+  dsimp
+  . apply mul_le_mul_of_nonneg_left
+    . apply mf
+      apply aleb
+    apply nnc
+-- same as
 example {c : ℝ} (mf : Monotone f) (nnc : 0 ≤ c) : Monotone fun x ↦ c * f x :=
-  sorry
+  fun a b aleb ↦ mul_le_mul_of_nonneg_left (mf aleb) (nnc)
 
+example (mf : Monotone f) (mg : Monotone g) : Monotone fun x ↦ f (g x) := by
+  intro a b aleb
+  dsimp
+  apply mf
+  . apply mg
+    apply aleb
+-- same as
 example (mf : Monotone f) (mg : Monotone g) : Monotone fun x ↦ f (g x) :=
-  sorry
+  fun a b aleb ↦ mf (mg aleb)
 
 def FnEven (f : ℝ → ℝ) : Prop :=
   ∀ x, f x = f (-x)
@@ -161,7 +180,6 @@ example (ef : FnEven f) (eg : FnEven g) : FnEven fun x ↦ f x + g x := by
   calc
     (fun x ↦ f x + g x) x = f x + g x := rfl
     _ = f (-x) + g (-x) := by rw [ef, eg]
-
 
 example (of : FnOdd f) (og : FnOdd g) : FnEven fun x ↦ f x * g x := by
   intro x
@@ -197,11 +215,10 @@ example : s ⊆ s := by
   exact xs
 
 theorem Subset.refl : s ⊆ s :=
-  fun x xs ↦ xs
+  fun _ xs ↦ xs
 
 theorem Subset.trans : r ⊆ s → s ⊆ t → r ⊆ t :=
-  fun rsubs ssubt x xr ↦ ssubt (rsubs xr)
-
+  fun rsubs ssubt _ xr ↦ ssubt (rsubs xr)
 
 end
 
@@ -225,12 +242,25 @@ section
 
 open Function
 
+set_option linter.unusedTactic false
+
 example (c : ℝ) : Injective fun x ↦ x + c := by
-  intro x₁ x₂ h'
-  exact (add_left_inj c).mp h'
+  -- ∀ ⦃a₂ : ℝ⦄, (fun x => x + c) a₁✝ = (fun x => x + c) a₂ → a₁✝ = a₂
+  intro
+    x₁ -- a₁
+    x₂ -- a₂
+    h' -- (fun x => x + c) x₁ = (fun x => x + c) x₂)
+  -- x₁ = x₂
+  #check add_left_inj c
+  #check (add_left_inj c).mp
+  -- ^ this is what we want (way to go from x₁ = x₂ to what h' is)
+  apply (add_left_inj c).mp
+  apply h'
 
 example {c : ℝ} (h : c ≠ 0) : Injective fun x ↦ c * x := by
   intro x₁ x₂ h'
+  #check mul_right_inj' h
+  #check (mul_right_inj' h).mp
   apply (mul_right_inj' h).mp
   apply h'
 
@@ -239,8 +269,9 @@ variable {g : β → γ} {f : α → β}
 
 example (injg : Injective g) (injf : Injective f) : Injective fun x ↦ g (f x) := by
   intro x₁ x₂ h
-  apply injf
-  apply injg
+  -- we want to turn `x₁ = x₂` into `g (f x₁) = g (f x₂)`
+  apply injf -- `f x₁ = f x₂`
+  apply injg -- `g (f x₁) = g (f x₂)`
   apply h
 
 end
