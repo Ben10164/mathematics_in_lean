@@ -14,6 +14,12 @@ pp.unicode.fun = true
 autoImplicit = false
 relaxedAutoImplicit = false
 
+[[lean_lib]]
+name = "Random"
+pp.unicode.fun = true
+autoImplicit = false
+relaxedAutoImplicit = false
+
 [[require]]
 name = "mathlib"
 git = "https://github.com/leanprover-community/mathlib4"
