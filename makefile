@@ -1,11 +1,9 @@
-.PHONY: all release update_version
+.PHONY: all release
 
 all: release
 
-VERSION := $(shell grep '^version' lakefile.toml | sed 's/version = "\(.*\)"/\1/')
-
-release: update_version
-	echo "Current version is $(VERSION)."
+release:
+	echo "Current version is $(shell grep '^version' lakefile.toml | sed 's/version = "\(.*\)"/\1/')."
 	@read -p "Enter the new version: " VERSION; \
 	sed -i.bak "s/^version = \".*\"/version = \"$$VERSION\"/" lakefile.toml; \
 	echo "Updated version to $$VERSION in lakefile.toml"
@@ -15,5 +13,3 @@ release: update_version
 	gh release create $(shell grep '^version' lakefile.toml | sed 's/version = "\(.*\)"/\1/')
 	lake upload $(shell grep '^version' lakefile.toml | sed 's/version = "\(.*\)"/\1/')
 	git push
-
-update_version:
