@@ -164,13 +164,27 @@ example (ef : FnEven f) (eg : FnEven g) : FnEven fun x ↦ f x + g x := by
 
 
 example (of : FnOdd f) (og : FnOdd g) : FnEven fun x ↦ f x * g x := by
-  sorry
+  intro x
+  calc
+    (fun x ↦ f x * g x) x = f x * g x := by
+      rfl
+    _ = f (-x) * g (-x) := by
+      rw [of]
+      rw [og]
+      rw [neg_mul_neg]
 
 example (ef : FnEven f) (og : FnOdd g) : FnOdd fun x ↦ f x * g x := by
-  sorry
+  intro x
+  dsimp
+  rw [ef]
+  rw [og]
+  rw [neg_mul_eq_mul_neg]
 
 example (ef : FnEven f) (og : FnOdd g) : FnEven fun x ↦ f (g x) := by
-  sorry
+  intro x
+  dsimp
+  rw [og]
+  rw [← ef]
 
 end
 
@@ -182,10 +196,12 @@ example : s ⊆ s := by
   intro x xs
   exact xs
 
-theorem Subset.refl : s ⊆ s := fun x xs ↦ xs
+theorem Subset.refl : s ⊆ s :=
+  fun x xs ↦ xs
 
-theorem Subset.trans : r ⊆ s → s ⊆ t → r ⊆ t := by
-  sorry
+theorem Subset.trans : r ⊆ s → s ⊆ t → r ⊆ t :=
+  fun rsubs ssubt x xr ↦ ssubt (rsubs xr)
+
 
 end
 
@@ -196,8 +212,12 @@ variable (s : Set α) (a b : α)
 def SetUb (s : Set α) (a : α) :=
   ∀ x, x ∈ s → x ≤ a
 
-example (h : SetUb s a) (h' : a ≤ b) : SetUb s b :=
-  sorry
+example (h : SetUb s a) (h' : a ≤ b) : SetUb s b := by
+  intro x xs
+  . apply le_trans
+    apply h x
+    apply xs
+    apply h'
 
 end
 
@@ -210,12 +230,17 @@ example (c : ℝ) : Injective fun x ↦ x + c := by
   exact (add_left_inj c).mp h'
 
 example {c : ℝ} (h : c ≠ 0) : Injective fun x ↦ c * x := by
-  sorry
+  intro x₁ x₂ h'
+  apply (mul_right_inj' h).mp
+  apply h'
 
 variable {α : Type*} {β : Type*} {γ : Type*}
 variable {g : β → γ} {f : α → β}
 
 example (injg : Injective g) (injf : Injective f) : Injective fun x ↦ g (f x) := by
-  sorry
+  intro x₁ x₂ h
+  apply injf
+  apply injg
+  apply h
 
 end
