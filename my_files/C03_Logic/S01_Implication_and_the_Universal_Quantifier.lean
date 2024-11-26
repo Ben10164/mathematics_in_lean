@@ -7,36 +7,9 @@ namespace C03S01
 
 #check ∀ x y ε : ℝ, 0 < ε → ε ≤ 1 → |x| < ε → |y| < ε → |x * y| < ε
 
-theorem my_lemma : ∀ x y ε : ℝ, 0 < ε → ε ≤ 1 → |x| < ε → |y| < ε → |x * y| < ε :=
-  sorry
-
-section
-variable (a b δ : ℝ)
-variable (h₀ : 0 < δ) (h₁ : δ ≤ 1)
-variable (ha : |a| < δ) (hb : |b| < δ)
-
-#check my_lemma a b δ
-#check my_lemma a b δ h₀ h₁
-#check my_lemma a b δ h₀ h₁ ha hb
-
-end
-
 -- Same as before, but this one declares x y and ε directly
-theorem my_lemma2 : ∀ {x y ε : ℝ}, 0 < ε → ε ≤ 1 → |x| < ε → |y| < ε → |x * y| < ε :=
-  sorry
-
-section
-variable (a b δ : ℝ)
-variable (h₀ : 0 < δ) (h₁ : δ ≤ 1)
-variable (ha : |a| < δ) (hb : |b| < δ)
-
-#check my_lemma2 h₀ h₁ ha hb
-
-end
-
--- now we use intro to introduce all the variables as well as the statements
-theorem my_lemma3 :
-    ∀ {x y ε : ℝ}, 0 < ε → ε ≤ 1 → |x| < ε → |y| < ε → |x * y| < ε := by
+theorem my_lemma : ∀ {x y ε : ℝ}, 0 < ε → ε ≤ 1 → |x| < ε → |y| < ε → |x * y| < ε := by
+  -- now we use intro to introduce all the variables as well as the statements
   intro x y ε epos ele1 xlt ylt
   /-
   x → x
@@ -47,11 +20,6 @@ theorem my_lemma3 :
   xlt → |x| < ε
   ylt → |y| < ε
   -/
-  sorry
-
-theorem my_lemma4 :
-    ∀ {x y ε : ℝ}, 0 < ε → ε ≤ 1 → |x| < ε → |y| < ε → |x * y| < ε := by
-  intro x y ε epos ele1 xlt ylt
   calc
     |x * y| = |x| * |y| := by
       apply abs_mul
@@ -69,6 +37,17 @@ theorem my_lemma4 :
         . apply epos
     _ = ε := by
       apply one_mul
+
+section
+variable (a b δ : ℝ)
+variable (h₀ : 0 < δ) (h₁ : δ ≤ 1)
+variable (ha : |a| < δ) (hb : |b| < δ)
+
+#check my_lemma
+#check my_lemma h₀ h₁
+#check my_lemma h₀ h₁ ha hb
+
+end
 
 def FnUb (f : ℝ → ℝ) (a : ℝ) : Prop :=
   ∀ x, f x ≤ a
