@@ -5,29 +5,48 @@ import Mathlib.Data.Nat.Prime.Basic
 namespace C03S04
 
 example {x y : ℝ} (h₀ : x ≤ y) (h₁ : ¬y ≤ x) : x ≤ y ∧ x ≠ y := by
+  -- since it is an and statement, we can just prove both of the sides individually
   constructor
-  · assumption
-  intro h
+  -- case left : x ≤ y
+  apply h₀
+  -- case right : x ≠ y
+  intro h -- x ≠ y -> x = y -> False
+  -- if ¬(y ≤ x) → True, then we can replace False with y ≤ x
   apply h₁
   rw [h]
 
 example {x y : ℝ} (h₀ : x ≤ y) (h₁ : ¬y ≤ x) : x ≤ y ∧ x ≠ y :=
-  ⟨h₀, fun h ↦ h₁ (by rw [h])⟩
+  -- lets construct x ≤ y ∧ x ≠ y
+  ⟨h₀, -- x ≤ y
+    fun h ↦           --intro h
+      h₁              -- apply h
+      (by rw [h])     -- rw [h]
+  ⟩
 
 example {x y : ℝ} (h₀ : x ≤ y) (h₁ : ¬y ≤ x) : x ≤ y ∧ x ≠ y :=
   have h : x ≠ y := by
-    contrapose! h₁
+    contrapose! h₁ -- swap the state with h₁, negating both
+    -- h₁ : ¬y ≤ x
+    -- ⊢ x ≠ y
+    -- becomes
+    -- h₁ : x = y
+    -- ⊢ y ≤ x
     rw [h₁]
-  ⟨h₀, h⟩
+  ⟨h₀, h⟩ -- construct it like before
 
 example {x y : ℝ} (h : x ≤ y ∧ x ≠ y) : ¬y ≤ x := by
-  rcases h with ⟨h₀, h₁⟩
-  contrapose! h₁
-  exact le_antisymm h₀ h₁
+  rcases h with ⟨h₀, h₁⟩ -- decompose h into h₀ and h₁
+  contrapose! h₁ -- swap with h₁
+  apply le_antisymm
+  apply h₀
+  apply h₁
 
 example {x y : ℝ} : x ≤ y ∧ x ≠ y → ¬y ≤ x := by
   rintro ⟨h₀, h₁⟩ h'
-  exact h₁ (le_antisymm h₀ h')
+  apply h₁
+  apply le_antisymm
+  apply h₀
+  apply h'
 
 example {x y : ℝ} : x ≤ y ∧ x ≠ y → ¬y ≤ x :=
   fun ⟨h₀, h₁⟩ h' ↦ h₁ (le_antisymm h₀ h')
@@ -38,8 +57,8 @@ example {x y : ℝ} (h : x ≤ y ∧ x ≠ y) : ¬y ≤ x := by
   exact le_antisymm h₀ h₁
 
 example {x y : ℝ} (h : x ≤ y ∧ x ≠ y) : ¬y ≤ x := by
-  cases h
-  case intro h₀ h₁ =>
+  cases h -- extract h into left and right cases
+  case intro h₀ h₁ => -- intro h₀ and h₁ and handle the cases
     contrapose! h₁
     exact le_antisymm h₀ h₁
 
@@ -57,14 +76,24 @@ example {x y : ℝ} (h : x ≤ y ∧ x ≠ y) : ¬y ≤ x := by
 
 example {x y : ℝ} (h : x ≤ y ∧ x ≠ y) : ¬y ≤ x := by
   intro h'
+  -- if the state is False, and it depends on an and, we can set the state to be equal to the right side of h negated
   apply h.right
-  exact le_antisymm h.left h'
+  . apply le_antisymm
+    apply h.left
+    apply h'
 
 example {x y : ℝ} (h : x ≤ y ∧ x ≠ y) : ¬y ≤ x :=
   fun h' ↦ h.right (le_antisymm h.left h')
 
-example {m n : ℕ} (h : m ∣ n ∧ m ≠ n) : m ∣ n ∧ ¬n ∣ m :=
-  sorry
+example {m n : ℕ} (h : m ∣ n ∧ m ≠ n) : m ∣ n ∧ ¬n ∣ m := by
+  cases h
+  case intro h₀ h₁ =>
+    . constructor
+      apply h₀
+      contrapose! h₁
+      . apply dvd_antisymm -- turn `m = n` to proving `m | n` and `n | m`
+        apply h₀
+        apply h₁
 
 example : ∃ x : ℝ, 2 < x ∧ x < 4 :=
   ⟨5 / 2, by norm_num, by norm_num⟩
