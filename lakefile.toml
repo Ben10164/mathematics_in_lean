@@ -7,6 +7,7 @@ name = "my_files"
 pp.unicode.fun = true
 autoImplicit = false
 relaxedAutoImplicit = false
+leanOptions = { linter.unusedVariables = false, weak.linter.unusedTactic = false }
 
 [[lean_lib]]
 name = "MIL"

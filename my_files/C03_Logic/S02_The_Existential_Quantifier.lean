@@ -10,13 +10,17 @@ example : ∃ x : ℝ, 2 < x ∧ x < 3 := by
   norm_num
 
 example : ∃ x : ℝ, 2 < x ∧ x < 3 := by
-  have h1 : 2 < (5 : ℝ) / 2 := by norm_num
+  use 5 / 2
+  have h1 : (2 < (5 : ℝ) / 2) := by norm_num
   have h2 : (5 : ℝ) / 2 < 3 := by norm_num
-  use 5 / 2, h1, h2
+  . and_intros
+    apply h1
+    apply h2
 
 example : ∃ x : ℝ, 2 < x ∧ x < 3 := by
-  have h : 2 < (5 : ℝ) / 2 ∧ (5 : ℝ) / 2 < 3 := by norm_num
   use 5 / 2
+  have h : 2 < (5 : ℝ) / 2 ∧ (5 : ℝ) / 2 < 3 := by norm_num
+  apply h
 
 example : ∃ x : ℝ, 2 < x ∧ x < 3 :=
   have h : 2 < (5 : ℝ) / 2 ∧ (5 : ℝ) / 2 < 3 := by norm_num
@@ -52,10 +56,17 @@ example (ubf : FnHasUb f) (ubg : FnHasUb g) : FnHasUb fun x ↦ f x + g x := by
   apply fnUb_add ubfa ubgb
 
 example (lbf : FnHasLb f) (lbg : FnHasLb g) : FnHasLb fun x ↦ f x + g x := by
-  sorry
+  rcases lbf with ⟨a, lbfa⟩
+  rcases lbg with ⟨b, lbgb⟩
+  use a + b
+  intro x
+  apply add_le_add (lbfa x) (lbgb x)
 
 example {c : ℝ} (ubf : FnHasUb f) (h : c ≥ 0) : FnHasUb fun x ↦ c * f x := by
-  sorry
+  rcases ubf with ⟨a, ubfa⟩
+  use c * a
+  intro x
+  apply mul_le_mul_of_nonneg_left (ubfa x) h
 
 example : FnHasUb f → FnHasUb g → FnHasUb fun x ↦ f x + g x := by
   rintro ⟨a, ubfa⟩ ⟨b, ubgb⟩
@@ -107,7 +118,8 @@ theorem sumOfSquares_mul {x y : α} (sosx : SumOfSquares x) (sosy : SumOfSquares
   rcases sosx with ⟨a, b, xeq⟩
   rcases sosy with ⟨c, d, yeq⟩
   rw [xeq, yeq]
-  use a * c - b * d, a * d + b * c
+  use a * c - b * d
+  use a * d + b * c
   ring
 
 theorem sumOfSquares_mul' {x y : α} (sosx : SumOfSquares x) (sosy : SumOfSquares y) :
@@ -126,10 +138,26 @@ example (divab : a ∣ b) (divbc : b ∣ c) : a ∣ c := by
   rcases divab with ⟨d, beq⟩
   rcases divbc with ⟨e, ceq⟩
   rw [ceq, beq]
-  use d * e; ring
+  use d * e
+  ring
 
 example (divab : a ∣ b) (divac : a ∣ c) : a ∣ b + c := by
-  sorry
+  rcases divab with ⟨d, beq⟩
+  -- this creates `d : ℕ` and `beq : b = a * d`
+  -- basically it is turning `a | b` into:
+    -- There exists an `d` such that `b = a * d`
+  rcases divac with ⟨e, ceq⟩
+  -- same but with `e : ℕ` and `ceq : c = a * e`
+    -- There exists an `e` such that `c = a * e`
+  rw [ceq]
+  rw [beq]
+  -- so now we have `a` | a * d + a * e
+  -- when we use `use`, we are basically saying
+    -- "Hey, the current situation is x | y, but to prove this I will show y = x * `...`"
+  use d + e
+  -- a * d + a * e = `a` * (d + e)
+  -- now we can use `ring` or just do the simple `rw`
+  rw [mul_add]
 
 end
 
@@ -139,11 +167,21 @@ open Function
 
 example {c : ℝ} : Surjective fun x ↦ x + c := by
   intro x
-  use x - c
-  dsimp; ring
+  -- ⊢ ∃ a, (fun x => x + c) `a` = x
+  use x - c -- use x - c for a
+  -- ⊢ (fun x => x + c) `(x - c)` = x
+  dsimp
+  ring
 
 example {c : ℝ} (h : c ≠ 0) : Surjective fun x ↦ c * x := by
-  sorry
+  intro x
+  -- ⊢ ∃ a, (fun x => c * x) `a` = x
+  use x / c -- sub a for x / c
+  -- ⊢ (fun x => c * x) `(x / c)` = x
+  dsimp
+  -- ⊢ c * (x / c) = x
+  rw [mul_div_cancel₀]
+  apply h
 
 example (x y : ℝ) (h : x - y ≠ 0) : (x ^ 2 - y ^ 2) / (x - y) = x + y := by
   field_simp [h]
@@ -163,6 +201,30 @@ variable {α : Type*} {β : Type*} {γ : Type*}
 variable {g : β → γ} {f : α → β}
 
 example (surjg : Surjective g) (surjf : Surjective f) : Surjective fun x ↦ g (f x) := by
-  sorry
+  /-
+  α : Type u_1
+  β : Type u_2
+  γ : Type u_3
+  g : β → γ
+  f : α → β
+  surjg : Surjective g
+  surjf : Surjective f
+  ⊢ Surjective fun x => g (f x)
+  -/
+  intro b
+  -- ∃ a, (fun x => g (f x)) a = b
+  dsimp
+  -- ∃ a, g (f a) = b
+  rcases surjg b with ⟨c, gc⟩
+  -- c : β
+  -- gc : g c = b
+  rcases surjf c with ⟨d, fd⟩
+  -- d : α
+  -- fd : f d = c
+  use d
+  -- g (f d) = b
+  rw [fd]
+  -- g c = b
+  rw [gc]
 
 end
