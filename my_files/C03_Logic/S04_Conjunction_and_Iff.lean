@@ -218,7 +218,13 @@ variable (a b : α)
 
 example : a < b ↔ a ≤ b ∧ a ≠ b := by
   rw [lt_iff_le_not_le]
-  sorry
+  constructor
+  . intro ⟨aleb, nblea⟩
+    rw [← lt_iff_le_and_ne]
+    apply lt_of_le_not_le aleb nblea
+  . intro ⟨aleb, aneb⟩
+    rw [← lt_iff_le_not_le]
+    apply lt_of_le_of_ne aleb aneb
 
 end
 
@@ -228,10 +234,18 @@ variable (a b c : α)
 
 example : ¬a < a := by
   rw [lt_iff_le_not_le]
-  sorry
+  rw [not_and_not_right]
+  intro alea
+  apply alea
 
 example : a < b → b < c → a < c := by
   simp only [lt_iff_le_not_le]
-  sorry
+  intro ⟨aleb, nblea⟩
+  intro ⟨blec, ncleb⟩
+  constructor
+  . apply le_trans aleb blec
+  . rintro clea
+    apply nblea
+    apply le_trans blec clea
 
 end
