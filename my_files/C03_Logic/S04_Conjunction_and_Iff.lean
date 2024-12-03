@@ -96,7 +96,17 @@ example {m n : ℕ} (h : m ∣ n ∧ m ≠ n) : m ∣ n ∧ ¬n ∣ m := by
         apply h₁
 
 example : ∃ x : ℝ, 2 < x ∧ x < 4 :=
-  ⟨5 / 2, by norm_num, by norm_num⟩
+  -- for this, we are basically just proving with an example
+  ⟨3, by norm_num, by norm_num⟩
+  -- define x as 3
+  -- solve 2 < 3 using norm_num
+  -- solve 3 < 4 using norm_num
+
+example : ∃ x : ℝ, 2 < x ∧ x < 4 := by
+  use 3 -- use 3 as x
+  . constructor
+    norm_num -- solves 2 < 3
+    norm_num -- solves 3 < 4
 
 example (x y : ℝ) : (∃ z : ℝ, x < z ∧ z < y) → x < y := by
   rintro ⟨z, xltz, zlty⟩
@@ -130,15 +140,50 @@ example {x y : ℝ} (h : x ≤ y) : ¬y ≤ x ↔ x ≠ y := by
 example {x y : ℝ} (h : x ≤ y) : ¬y ≤ x ↔ x ≠ y :=
   ⟨fun h₀ h₁ ↦ h₀ (by rw [h₁]), fun h₀ h₁ ↦ h₀ (le_antisymm h h₁)⟩
 
-example {x y : ℝ} : x ≤ y ∧ ¬y ≤ x ↔ x ≤ y ∧ x ≠ y :=
-  sorry
+example {x y : ℝ} : x ≤ y ∧ ¬y ≤ x ↔ x ≤ y ∧ x ≠ y := by
+  constructor
+  -- repeat
+  . rintro ⟨h₀, h₁⟩
+    constructor
+    . apply h₀
+    intro h₂
+    apply h₁
+    rw [h₂]
+  rintro ⟨h₀, h₁⟩
+  constructor
+  . apply h₀
+  intro h₂
+  apply h₁
+  apply le_antisymm
+  apply h₀
+  apply h₂
 
 theorem aux {x y : ℝ} (h : x ^ 2 + y ^ 2 = 0) : x = 0 :=
-  have h' : x ^ 2 = 0 := by sorry
+  have h' : x ^ 2 = 0 := by
+    apply le_antisymm
+    . rw [← h]
+      rw [le_add_iff_nonneg_right]
+      rw [sq]
+      apply mul_self_nonneg y
+    apply pow_two_nonneg x
+
   pow_eq_zero h'
 
-example (x y : ℝ) : x ^ 2 + y ^ 2 = 0 ↔ x = 0 ∧ y = 0 :=
-  sorry
+
+example (x y : ℝ) : x ^ 2 + y ^ 2 = 0 ↔ x = 0 ∧ y = 0 := by
+  constructor
+  . intro h
+    constructor
+    . apply aux at h
+      apply h
+    . rw [add_comm] at h
+      apply aux at h
+      apply h
+  . intro ⟨xeqz,yeqz⟩
+    rw [xeqz, yeqz]
+    rw [zero_pow]
+    rw [zero_add]
+    norm_num
 
 section
 
@@ -159,7 +204,13 @@ theorem not_monotone_iff {f : ℝ → ℝ} : ¬Monotone f ↔ ∃ x y, x ≤ y �
   rfl
 
 example : ¬Monotone fun x : ℝ ↦ -x := by
-  sorry
+  rw [Monotone]
+  push_neg
+  use 0, 1
+  constructor
+  apply zero_le_one
+  rw [neg_zero]
+  apply neg_one_lt_zero
 
 section
 variable {α : Type*} [PartialOrder α]
