@@ -8,8 +8,8 @@ import my_files.C02_Basics.S05_Proving_Facts_about_Algebraic_Structures
 import my_files.C03_Logic.S01_Implication_and_the_Universal_Quantifier
 import my_files.C03_Logic.S02_The_Existential_Quantifier
 import my_files.C03_Logic.S03_Negation
--- import my_files.C03_Logic.S04_Conjunction_and_Iff
--- import my_files.C03_Logic.S05_Disjunction
+import my_files.C03_Logic.S04_Conjunction_and_Iff
+import my_files.C03_Logic.S05_Disjunction
 -- import my_files.C03_Logic.S06_Sequences_and_Convergence
 -- import my_files.C04_Sets_and_Functions.S01_Sets
 -- import my_files.C04_Sets_and_Functions.S02_Functions
