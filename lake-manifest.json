@@ -91,5 +91,5 @@
    "inputRev": "v4.13.0",
    "inherited": false,
    "configFile": "lakefile.lean"}],
- "name": "mil",
+ "name": "ben_mil",
  "lakeDir": ".lake"}

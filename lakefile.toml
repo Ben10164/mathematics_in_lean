@@ -1,6 +1,6 @@
 name = "ben_mil"
 version = "0.3.6"
-defaultTargets = ["my_files"]
+defaultTargets = ["my_files", "MIL", "MIL_Solutions", "Random"]
 
 [[lean_lib]]
 name = "my_files"
@@ -11,6 +11,12 @@ leanOptions = { linter.unusedVariables = false, weak.linter.unusedTactic = false
 
 [[lean_lib]]
 name = "MIL"
+pp.unicode.fun = true
+autoImplicit = false
+relaxedAutoImplicit = false
+
+[[lean_lib]]
+name = "MIL_Solutions"
 pp.unicode.fun = true
 autoImplicit = false
 relaxedAutoImplicit = false

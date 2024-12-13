@@ -4,6 +4,10 @@ import Mathlib.LinearAlgebra.Charpoly.Basic
 
 import MIL.Common
 
+open Function LinearMap Submodule
+
+variable {K : Type*} [Field K] {V : Type*} [AddCommGroup V] [Module K V]
+
 def preimage {W : Type*} [AddCommGroup W] [Module K W] (φ : V →ₗ[K] W) (H : Submodule K W) :
     Submodule K V where
   carrier := φ ⁻¹' H
@@ -21,6 +25,10 @@ def preimage {W : Type*} [AddCommGroup W] [Module K W] (φ : V →ₗ[K] W) (H :
     rw [Set.mem_preimage, map_smul]
     exact H.smul_mem a hv
 
+example {S T : Submodule K V} {x : V} (h : x ∈ S ⊔ T) :
+    ∃ s ∈ S, ∃ t ∈ T, x = s + t  := by
+  rw [← S.span_eq, ← T.span_eq, ← Submodule.span_union] at h
+  induction h using Submodule.span_induction with
   | mem x h =>
       rcases h with (hx|hx)
       · use x, hx, 0, T.zero_mem
@@ -40,12 +48,17 @@ def preimage {W : Type*} [AddCommGroup W] [Module K W] (φ : V →ₗ[K] W) (H :
       use a • s, S.smul_mem a hs, a • t, T.smul_mem a ht
       module
 
+variable {W : Type*} [AddCommGroup W] [Module K W] (φ : V →ₗ[K] W)
+
+example (E : Submodule K V) (F : Submodule K W) :
+    Submodule.map φ E ≤ F ↔ E ≤ Submodule.comap φ F := by
   constructor
   · intro h x hx
     exact h ⟨x, hx, rfl⟩
   · rintro h - ⟨x, hx, rfl⟩
     exact h hx
 
+example : Submodule K (V ⧸ E) ≃ { F : Submodule K V // E ≤ F } where
   toFun F := ⟨comap E.mkQ F, by
     conv_lhs => rw [← E.ker_mkQ, ← comap_bot]
     gcongr
