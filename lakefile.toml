@@ -1,6 +1,6 @@
 name = "ben_mil"
 version = "0.3.6"
-defaultTargets = ["my_files", "MIL", "MIL_Solutions", "Random"]
+defaultTargets = ["my_files"]
 
 [[lean_lib]]
 name = "my_files"
