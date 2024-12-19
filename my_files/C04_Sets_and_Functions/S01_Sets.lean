@@ -76,7 +76,18 @@ example : (s \ t) \ u ⊆ s \ (t ∪ u) := by
   rintro (xt | xu) <;> contradiction
 
 example : s \ (t ∪ u) ⊆ (s \ t) \ u := by
-  sorry
+  rintro x ⟨xs, xnu⟩
+  constructor
+  use xs
+  . intro xt
+    apply xnu
+    left
+    apply xt
+  . intro xu
+    apply xnu
+    right
+    apply xu
+
 example : s ∩ t = t ∩ s := by
   ext x
   simp only [mem_inter_iff]
@@ -94,19 +105,85 @@ example : s ∩ t = t ∩ s := by
   · rintro x ⟨xs, xt⟩; exact ⟨xt, xs⟩
   · rintro x ⟨xt, xs⟩; exact ⟨xs, xt⟩
 
-example : s ∩ t = t ∩ s :=
-    Subset.antisymm sorry sorry
+example : s ∩ t = t ∩ s := by
+    apply Subset.antisymm
+    . rintro x ⟨xs, xt⟩
+      apply mem_inter
+      . apply xt
+      . apply xs
+
+    . rintro x ⟨xt, xs⟩
+      apply mem_inter
+      . apply xs
+      . apply xt
+
 example : s ∩ (s ∪ t) = s := by
-  sorry
+  apply Subset.antisymm
+  . apply inter_subset_left
+  . rintro x xs
+    use xs
+    apply mem_union_left
+    apply xs
 
 example : s ∪ s ∩ t = s := by
-  sorry
+  ext x
+  constructor
+  . rintro (xs | ⟨xs, y⟩)
+    repeat1 apply xs
+  . rintro xs
+    apply mem_union_left
+    apply xs
 
 example : s \ t ∪ t = s ∪ t := by
-  sorry
+  ext x
+  constructor
+  . rintro (⟨xs, xt⟩ | xt)
+    . apply mem_union_left
+      apply xs
+    . apply mem_union_right
+      apply xt
+  . rintro (xs | xt)
+    . by_cases xnt : x ∈ t
+      . right
+        apply xnt
+      . left
+        constructor
+        . apply xs
+        . apply xnt
+    . right
+      . apply xt
 
 example : s \ t ∪ t \ s = (s ∪ t) \ (s ∩ t) := by
-  sorry
+  ext x
+  constructor
+  · rintro (⟨xs, xnt⟩ | ⟨xt, xns⟩)
+    . constructor
+      . apply mem_union_left
+        apply xs
+      . rintro ⟨xs, xt⟩
+        apply xnt
+        apply xt
+    . constructor
+      . apply mem_union_right
+        apply xt
+      . rintro ⟨xs, xt⟩
+        apply xns
+        apply xs
+  . rintro ⟨xs | xt, nxst⟩
+    . left
+      use xs
+      intro xt
+      apply nxst
+      constructor
+      . apply xs
+      . apply xt
+    . right
+      use xt
+      intro xs
+      apply nxst
+      constructor
+      . apply xs
+      . apply xt
 
 def evens : Set ℕ :=
   { n | Even n }
@@ -127,7 +204,14 @@ example (x : ℕ) : x ∈ (univ : Set ℕ) :=
   trivial
 
 example : { n | Nat.Prime n } ∩ { n | n > 2 } ⊆ { n | ¬Even n } := by
-  sorry
+  rintro x
+  simp
+  intro xp xgt2
+  rcases Nat.Prime.eq_two_or_odd xp with h | h
+  . rw [h]
+    linarith
+  . rw [Nat.odd_iff]
+    rw [h]
 
 #print Prime
 
@@ -161,12 +245,25 @@ example (h : ∃ x ∈ s, ¬Even x ∧ Prime x) : ∃ x ∈ s, Prime x := by
 
 section
 variable (ssubt : s ⊆ t)
+#check ssubt
 
 example (h₀ : ∀ x ∈ t, ¬Even x) (h₁ : ∀ x ∈ t, Prime x) : ∀ x ∈ s, ¬Even x ∧ Prime x := by
-  sorry
+  intro x xs
+  constructor
+  . apply h₀
+    apply ssubt
+    apply xs
+  . apply h₁
+    apply ssubt
+    apply xs
 
 example (h : ∃ x ∈ s, ¬Even x ∧ Prime x) : ∃ x ∈ t, Prime x := by
-  sorry
+  rcases h with ⟨x, xs, xo, xp⟩
+  use x
+  constructor
+  . apply ssubt
+    apply xs
+  . apply xp
 
 end
 
@@ -203,9 +300,28 @@ example : (⋂ i, A i ∩ B i) = (⋂ i, A i) ∩ ⋂ i, B i := by
   · exact h1 i
   exact h2 i
 
-
 example : (s ∪ ⋂ i, A i) = ⋂ i, A i ∪ s := by
-  sorry
+  ext x
+  rw [mem_union]
+  rw [mem_iInter]
+  simp
+  constructor -- man i love constructor
+  . rintro (xs | xI)
+    . intro i
+      right
+      apply xs
+    . intro i
+      left
+      apply xI
+  . intro h
+    by_cases xs: x ∈ s
+    . left
+      apply xs
+    . right
+      intro i
+      cases h i
+      . assumption
+      . contradiction -- because h✝ is `x ∈ s`, but the current state of xs in this case is `x ∉ s`
 
 def primes : Set ℕ :=
   { x | Nat.Prime x }
@@ -226,7 +342,14 @@ example : (⋂ p ∈ primes, { x | ¬p ∣ x }) ⊆ { x | x = 1 } := by
   apply Nat.exists_prime_and_dvd
 
 example : (⋃ p ∈ primes, { x | x ≤ p }) = univ := by
-  sorry
+  apply eq_univ_of_forall
+  intro x
+  simp
+  rcases Nat.exists_infinite_primes x with ⟨p, xlep, primep⟩
+  use p
+  constructor
+  . apply primep
+  . apply xlep
 
 end
 

@@ -36,5 +36,8 @@
     "files.trimTrailingWhitespace": true,
     "files.trimFinalNewlines": true,
     "lean4.infoview.emphasizeFirstGoal": true,
-    "lean4.infoview.showExpectedType": false
+    "lean4.infoview.showExpectedType": false,
+    "lean4.input.customTranslations": {
+        "jesus": "✝"
+    }
 }
