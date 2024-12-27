@@ -60,7 +60,7 @@ instance [Monoid M] : Inf (Submonoid₁ M) :=
       mul_mem := fun ⟨hx, hx'⟩ ⟨hy, hy'⟩ ↦ ⟨S₁.mul_mem hx hy, S₂.mul_mem hx' hy'⟩ }⟩
 
 
-example [Monoid M] (N P : Submonoid₁ M) : Submonoid₁ M := N ⊓ P
+example [Monoid M] (N P : Submonoid₁ M) : Submonoid₁ M := N
 
 
 def Submonoid.Setoid [CommMonoid M] (N : Submonoid M) : Setoid M  where

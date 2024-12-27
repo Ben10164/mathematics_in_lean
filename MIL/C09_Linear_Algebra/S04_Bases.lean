@@ -211,8 +211,8 @@ example : Module.finrank ℂ ℂ = 1 :=
   Module.finrank_self ℂ
 
 -- But as a real vector space it has dimension two.
-example : Module.finrank ℝ ℂ = 2 :=
-  Complex.finrank_real_complex
+example : Module.finrank ℝ ℂ = 2 := by
+  rw [Module.finrank_eq_card_basis Complex.basisOneI, Fintype.card_fin]
 
 
 example [FiniteDimensional K V] : 0 < Module.finrank K V ↔ Nontrivial V  :=

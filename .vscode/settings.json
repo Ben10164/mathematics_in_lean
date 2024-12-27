@@ -14,7 +14,7 @@
         ".gitignore": true,
         "lake-manifest.json": true,
         // "lakefile.lean": true,
-        "lean-toolchain": true,
+        // "lean-toolchain": true,
         "mathematics_in_lean.pdf": true,
         // "MIL.lean": true,
         "README.md":true,
