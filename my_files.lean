@@ -12,8 +12,8 @@ import my_files.C03_Logic.S04_Conjunction_and_Iff
 import my_files.C03_Logic.S05_Disjunction
 import my_files.C03_Logic.S06_Sequences_and_Convergence
 import my_files.C04_Sets_and_Functions.S01_Sets
--- import my_files.C04_Sets_and_Functions.S02_Functions
--- import my_files.C04_Sets_and_Functions.S03_The_Schroeder_Bernstein_Theorem
+import my_files.C04_Sets_and_Functions.S02_Functions
+import my_files.C04_Sets_and_Functions.S03_The_Schroeder_Bernstein_Theorem
 -- import my_files.C05_Elementary_Number_Theory.S01_Irrational_Roots
 -- import my_files.C05_Elementary_Number_Theory.S02_Induction_and_Recursion
 -- import my_files.C05_Elementary_Number_Theory.S03_Infinitely_Many_Primes
