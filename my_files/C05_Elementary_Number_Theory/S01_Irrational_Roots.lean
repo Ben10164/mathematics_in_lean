@@ -7,6 +7,8 @@ import Mathlib.Data.Nat.Prime.Basic
 example (m n : Nat) (h : m.Coprime n) : m.gcd n = 1 :=
   h
 
+#eval Nat.Coprime 4 9
+
 example (m n : Nat) (h : m.Coprime n) : m.gcd n = 1 := by
   rw [Nat.Coprime] at h
   exact h
@@ -19,6 +21,11 @@ example : Nat.gcd 12 8 = 4 := by norm_num
 
 example (p : ℕ) (prime_p : Nat.Prime p) : 2 ≤ p ∧ ∀ m : ℕ, m < p → m ∣ p → m = 1 := by
   rwa [Nat.prime_def_lt] at prime_p
+
+-- same as
+example (p : ℕ) (prime_p : Nat.Prime p) : 2 ≤ p ∧ ∀ m : ℕ, m < p → m ∣ p → m = 1 := by
+  rw [Nat.prime_def_lt] at prime_p
+  apply prime_p
 
 #check Nat.Prime.eq_one_or_self_of_dvd
 
@@ -51,20 +58,31 @@ example (a b c : Nat) (h : a * b = a * c) (h' : a ≠ 0) : b = c :=
 
 example {m n : ℕ} (coprime_mn : m.Coprime n) : m ^ 2 ≠ 2 * n ^ 2 := by
   intro sqr_eq
-  have : 2 ∣ m := by
-    sorry
-  obtain ⟨k, meq⟩ := dvd_iff_exists_eq_mul_left.mp this
-  have : 2 * (2 * k ^ 2) = 2 * n ^ 2 := by
+  have two_dvd_m: 2 ∣ m := by
+    apply even_of_even_sqr
+    rw [sqr_eq]
+    apply dvd_mul_right
+  obtain ⟨k, meq⟩ := dvd_iff_exists_eq_mul_left.mp two_dvd_m
+  have two_two_k_sq_eq_two_n_sq: 2 * (2 * k ^ 2) = 2 * n ^ 2 := by
     rw [← sqr_eq, meq]
     ring
-  have : 2 * k ^ 2 = n ^ 2 :=
-    sorry
-  have : 2 ∣ n := by
-    sorry
-  have : 2 ∣ m.gcd n := by
-    sorry
+  have two_k_sq_eq_n_sq: 2 * k ^ 2 = n ^ 2 := by
+    symm
+    rw [← mul_right_inj' two_ne_zero]
+    rw [two_two_k_sq_eq_two_n_sq]
+  have two_dvd_n: 2 ∣ n := by
+    apply even_of_even_sqr
+    rw [← two_k_sq_eq_n_sq]
+    apply dvd_mul_of_dvd_left
+    apply refl
+  have two_dvd_gcd: 2 ∣ m.gcd n := by
+    apply Nat.dvd_gcd
+    apply two_dvd_m
+    apply two_dvd_n
   have : 2 ∣ 1 := by
-    sorry
+    convert two_dvd_gcd
+    symm
+    exact coprime_mn
   norm_num at this
 
 example {m n p : ℕ} (coprime_mn : m.Coprime n) (prime_p : p.Prime) : m ^ 2 ≠ p * n ^ 2 := by
