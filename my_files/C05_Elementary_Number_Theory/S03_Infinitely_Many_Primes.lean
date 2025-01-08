@@ -50,7 +50,7 @@ theorem primes_infinite : ∀ n, ∃ p > n, Nat.Prime p := by
   refine ⟨p, ?_, pp⟩
   show p > n
   by_contra ple
-  push_neg  at ple
+  push_neg at ple
   have : p ∣ Nat.factorial (n + 1) := by
     sorry
   have : p ∣ 1 := by
@@ -224,4 +224,3 @@ theorem primes_mod_4_eq_3_infinite : ∀ n, ∃ p > n, Nat.Prime p ∧ p % 4 = 3
   have : p = 3 := by
     sorry
   contradiction
-
