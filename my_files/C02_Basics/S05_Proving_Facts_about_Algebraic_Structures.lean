@@ -1,5 +1,4 @@
 import MIL.Common
-import Mathlib.Topology.MetricSpace.Basic
 
 section
 variable {α : Type*} [PartialOrder α]

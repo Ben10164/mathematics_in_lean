@@ -1,4 +1,3 @@
-import Mathlib.Analysis.SpecialFunctions.Log.Basic
 import MIL.Common
 
 set_option linter.unusedTactic false

@@ -1,5 +1,3 @@
-import Mathlib.Algebra.Ring.Defs
-import Mathlib.Data.Real.Basic
 import MIL.Common
 
 section RingAxioms

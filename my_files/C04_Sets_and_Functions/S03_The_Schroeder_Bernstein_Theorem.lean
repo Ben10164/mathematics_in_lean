@@ -1,5 +1,3 @@
-import Mathlib.Data.Set.Lattice
-import Mathlib.Data.Set.Function
 import MIL.Common
 
 open Set
