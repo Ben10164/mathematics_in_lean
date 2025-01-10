@@ -176,15 +176,48 @@ theorem add_assoc (m n k : MyNat) : add (add m n) k = add m (add n k) := by
     apply rfl
   . rw [add]
     rw [succ_add]
-    sorry
+    rw [succ_add]
+    rw [ih]
+    rw [add]
 
 theorem mul_add (m n k : MyNat) : mul m (add n k) = add (mul m n) (mul m k) := by
+  induction' k with k ih
+  . rw [mul]
+    rw [add]
+    rw [add]
+  . rw [add]
+    rw [mul]
+    rw [ih]
+    rw [add_assoc]
+    rw[← mul]
 
-  sorry
 theorem zero_mul (n : MyNat) : mul zero n = zero := by
-  sorry
+  induction' n with n ih
+  . rw [mul]
+  . rw [mul]
+    rw [add]
+    rw [ih]
+
 theorem succ_mul (m n : MyNat) : mul (succ m) n = add (mul m n) n := by
-  sorry
+  induction' n with n ih
+  . rw [add]
+    rw [mul]
+    rw [mul]
+  . rw [add]
+    rw [mul]
+    rw [ih]
+    rw [add]
+    rw [mul]
+    rw [add_assoc]
+    rw [add_assoc]
+    rw [add_comm m n]
+
 theorem mul_comm (m n : MyNat) : mul m n = mul n m := by
-  sorry
+  induction' n with n ih
+  . rw [mul]
+    rw [zero_mul]
+  . rw [succ_mul]
+    rw [mul]
+    rw [ih]
+
 end MyNat
