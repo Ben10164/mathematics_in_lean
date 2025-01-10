@@ -1,4 +1,3 @@
-import Mathlib.Data.Nat.GCD.Basic
 import MIL.Common
 
 example (n : Nat) : n.succ ≠ Nat.zero :=
@@ -48,7 +47,28 @@ theorem dvd_fac {i n : ℕ} (ipos : 0 < i) (ile : i ≤ n) : i ∣ fac n := by
 theorem pow_two_le_fac (n : ℕ) : 2 ^ (n - 1) ≤ fac n := by
   rcases n with _ | n
   · simp [fac]
-  sorry
+  induction' n with n ih
+  . rw [Nat.add_one_sub_one]
+    rw [pow_zero]
+    rw [zero_add]
+    apply fac_pos
+  . simp at *
+    rw [fac]
+    rw [Nat.pow_add]
+    rw [mul_comm]
+    apply mul_le_mul
+    . rw [pow_one]
+      rw [add_assoc]
+      rw [one_add_one_eq_two]
+      apply le_add_left
+      apply le_refl
+    . apply ih
+    . apply Nat.zero_le
+    . rw [add_assoc]
+      rw [one_add_one_eq_two]
+      apply le_add_left
+      apply zero_le_two
+
 section
 
 variable {α : Type*} (s : Finset ℕ) (f : ℕ → ℕ) (n : ℕ)
@@ -99,7 +119,24 @@ theorem sum_id (n : ℕ) : ∑ i in range (n + 1), i = n * (n + 1) / 2 := by
   ring
 
 theorem sum_sqr (n : ℕ) : ∑ i in range (n + 1), i ^ 2 = n * (n + 1) * (2 * n + 1) / 6 := by
-  sorry
+  symm
+  rw [mul_assoc]
+  apply Nat.div_eq_of_eq_mul_right
+  . apply Nat.zero_lt_succ 5
+  . induction' n with n ih
+    . rw [zero_mul]
+      rw [zero_add]
+      rw [range_one]
+      rw [sum_singleton]
+      rw [sq]
+      rw [mul_zero]
+      rw [mul_zero]
+    . rw [Finset.sum_range_succ]
+      rw [mul_add 6]
+      -- now we have ih
+      rw [← ih]
+      ring
+
 end
 
 inductive MyNat where
