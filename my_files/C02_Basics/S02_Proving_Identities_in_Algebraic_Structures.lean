@@ -168,37 +168,66 @@ section GroupG
   -/
 
   namespace MyGroup
-    theorem mul_inv_cancel (a : G) : a * a⁻¹ = 1 := by          -- a * a⁻¹ = 1
-      have h1 : (a * a⁻¹)⁻¹ * (a * a⁻¹ * (a * a⁻¹)) = 1 := by     -- ⊢ (a * a⁻¹)⁻¹ * (a * a⁻¹ * (a * a⁻¹)) = 1
-        rw [mul_assoc]                                            -- ⊢ (a * a⁻¹)⁻¹ * (a * (a⁻¹ * (a * a⁻¹))) = 1
-        rw [← mul_assoc a⁻¹ a]                                    -- ⊢ (a * a⁻¹)⁻¹ * (a * (a⁻¹ * a * a⁻¹)) = 1
-        rw [inv_mul_cancel a]                                     -- ⊢ (a * a⁻¹)⁻¹ * (a * (1 * a⁻¹)) = 1
-        rw [one_mul]                                              -- ⊢ (a * a⁻¹)⁻¹ * (a * a⁻¹) = 1
-        rw [inv_mul_cancel (a * a⁻¹)]                             -- ⊢ 1 = 1
-      rw[← h1]                                                  -- ⊢ a * a⁻¹ = (a * a⁻¹)⁻¹ * (a * a⁻¹ * (a * a⁻¹))
-      rw[← mul_assoc]                                           -- ⊢ a * a⁻¹ = (a * a⁻¹)⁻¹ * (a * a⁻¹) * (a * a⁻¹)
-      rw[inv_mul_cancel (a * a⁻¹)]                              -- ⊢ a * a⁻¹ = 1 * (a * a⁻¹)
-      rw [one_mul]                                              -- a * a⁻¹ = a * a⁻¹
+    theorem mul_inv_cancel (a : G) : a * a⁻¹ = 1 := by
+    -- a * a⁻¹ = 1
+      have h1 : (a * a⁻¹)⁻¹ * (a * a⁻¹ * (a * a⁻¹)) = 1 := by
+        -- ⊢ (a * a⁻¹)⁻¹ * (a * a⁻¹ * (a * a⁻¹)) = 1
+        rw [mul_assoc]
+        -- ⊢ (a * a⁻¹)⁻¹ * (a * (a⁻¹ * (a * a⁻¹))) = 1
+        rw [← mul_assoc a⁻¹ a]
+        -- ⊢ (a * a⁻¹)⁻¹ * (a * (a⁻¹ * a * a⁻¹)) = 1
+        rw [inv_mul_cancel a]
+        -- ⊢ (a * a⁻¹)⁻¹ * (a * (1 * a⁻¹)) = 1
+        rw [one_mul]
+        -- ⊢ (a * a⁻¹)⁻¹ * (a * a⁻¹) = 1
+        rw [inv_mul_cancel (a * a⁻¹)]
+        -- ⊢ 1 = 1
+      rw[← h1]
+      -- ⊢ a * a⁻¹ = (a * a⁻¹)⁻¹ * (a * a⁻¹ * (a * a⁻¹))
+      rw[← mul_assoc]
+      -- ⊢ a * a⁻¹ = (a * a⁻¹)⁻¹ * (a * a⁻¹) * (a * a⁻¹)
+      rw[inv_mul_cancel (a * a⁻¹)]
+      -- ⊢ a * a⁻¹ = 1 * (a * a⁻¹)
+      rw [one_mul]
+      -- a * a⁻¹ = a * a⁻¹
 
-    theorem mul_one (a : G) : a * 1 = a := by   -- ⊢ a * 1 = a
-      rw [← inv_mul_cancel a]                   -- ⊢ a * (a⁻¹ * a) = a
-      rw [← mul_assoc]                          -- ⊢ a * a⁻¹ * a = a
-      rw [mul_inv_cancel]                       -- ⊢ 1 * a = a
-      rw [one_mul]                              -- ⊢ a = a
+    theorem mul_one (a : G) : a * 1 = a := by
+    -- ⊢ a * 1 = a
+      rw [← inv_mul_cancel a]
+      -- ⊢ a * (a⁻¹ * a) = a
+      rw [← mul_assoc]
+      -- ⊢ a * a⁻¹ * a = a
+      rw [mul_inv_cancel]
+      -- ⊢ 1 * a = a
+      rw [one_mul]
+      -- ⊢ a = a
 
-    theorem mul_inv_rev (a b : G) : (a * b)⁻¹ = b⁻¹ * a⁻¹ := by   -- ⊢ (a * b)⁻¹ = b⁻¹ * a⁻¹
-      rw[← one_mul (b⁻¹ * a⁻¹)]                                   -- ⊢ ......... = 1 * (b⁻¹ * a⁻¹)
-      rw [← inv_mul_cancel (a*b)]                                 -- ⊢ ......... = (a * b)⁻¹ * (a * b) * (b⁻¹ * a⁻¹)
-      rw[← mul_assoc]                                             -- ⊢ ......... = (a * b)⁻¹ * (a * b) * b⁻¹ * a⁻¹
-      rw [← mul_assoc (a * b)⁻¹]                                  -- ⊢ ......... = (a * b)⁻¹ * a * b * b⁻¹ * a⁻¹
-      rw [mul_assoc]                                              -- ⊢ ......... = (a * b)⁻¹ * a * b * (b⁻¹ * a⁻¹)
-      rw [mul_assoc]                                              -- ⊢ ......... = (a * b)⁻¹ * a * (b * (b⁻¹ * a⁻¹))
-      rw [← mul_assoc b]                                          -- ⊢ ......... = (a * b)⁻¹ * a * (b * b⁻¹ * a⁻¹)
-      rw[mul_inv_cancel b]                                        -- ⊢ ......... = (a * b)⁻¹ * a * (1 * a⁻¹)
-      rw [one_mul]                                                -- ⊢ ......... = (a * b)⁻¹ * a * a⁻¹
-      rw [mul_assoc]                                              -- ⊢ ......... = (a * b)⁻¹ * (a * a⁻¹)
-      rw[mul_inv_cancel]                                          -- ⊢ ......... = (a * b)⁻¹ * 1
-      rw [mul_one]                                                -- ⊢ ......... = (a * b)⁻¹
+    theorem mul_inv_rev (a b : G) : (a * b)⁻¹ = b⁻¹ * a⁻¹ := by
+    -- ⊢ (a * b)⁻¹ = b⁻¹ * a⁻¹
+      rw[← one_mul (b⁻¹ * a⁻¹)]
+      -- ⊢ ......... = 1 * (b⁻¹ * a⁻¹)
+      rw [← inv_mul_cancel (a*b)]
+      -- ⊢ ......... = (a * b)⁻¹ * (a * b) * (b⁻¹ * a⁻¹)
+      rw[← mul_assoc]
+      -- ⊢ ......... = (a * b)⁻¹ * (a * b) * b⁻¹ * a⁻¹
+      rw [← mul_assoc (a * b)⁻¹]
+      -- ⊢ ......... = (a * b)⁻¹ * a * b * b⁻¹ * a⁻¹
+      rw [mul_assoc]
+      -- ⊢ ......... = (a * b)⁻¹ * a * b * (b⁻¹ * a⁻¹)
+      rw [mul_assoc]
+      -- ⊢ ......... = (a * b)⁻¹ * a * (b * (b⁻¹ * a⁻¹))
+      rw [← mul_assoc b]
+      -- ⊢ ......... = (a * b)⁻¹ * a * (b * b⁻¹ * a⁻¹)
+      rw[mul_inv_cancel b]
+      -- ⊢ ......... = (a * b)⁻¹ * a * (1 * a⁻¹)
+      rw [one_mul]
+      -- ⊢ ......... = (a * b)⁻¹ * a * a⁻¹
+      rw [mul_assoc]
+      -- ⊢ ......... = (a * b)⁻¹ * (a * a⁻¹)
+      rw[mul_inv_cancel]
+      -- ⊢ ......... = (a * b)⁻¹ * 1
+      rw [mul_one]
+      -- ⊢ ......... = (a * b)⁻¹
 
   end MyGroup
 

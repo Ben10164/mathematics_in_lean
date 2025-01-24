@@ -83,7 +83,8 @@ theorem convergesTo_add {s t : ℕ → ℝ} {a b : ℝ}
       congr
       ring
 
-    -- By the triangle inequality, |s n - a + (t n - b)| is less than or equal to |s n - a| + |t n - b|.
+    -- By the triangle inequality, |s n - a + (t n - b)| is less than or equal to
+    -- |s n - a| + |t n - b|.
     _ ≤ |s n - a| + |t n - b| := by
       apply abs_add
 

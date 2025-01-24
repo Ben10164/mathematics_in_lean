@@ -74,7 +74,8 @@ example {x y : ℝ} (h : x ≤ y ∧ x ≠ y) : ¬y ≤ x := by
 
 example {x y : ℝ} (h : x ≤ y ∧ x ≠ y) : ¬y ≤ x := by
   intro h'
-  -- if the state is False, and it depends on an and, we can set the state to be equal to the right side of h negated
+  -- if the state is False, and it depends on an and, we can set the state to be equal to the right
+  -- side of h negated
   apply h.right
   . apply le_antisymm
     apply h.left
@@ -166,7 +167,6 @@ theorem aux {x y : ℝ} (h : x ^ 2 + y ^ 2 = 0) : x = 0 :=
     apply pow_two_nonneg x
 
   pow_eq_zero h'
-
 
 example (x y : ℝ) : x ^ 2 + y ^ 2 = 0 ↔ x = 0 ∧ y = 0 := by
   constructor
