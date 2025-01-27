@@ -1,5 +1,5 @@
 name = "ben_mil"
-version = "0.4.1"
+version = "0.6.1"
 defaultTargets = ["my_files"]
 
 [[lean_lib]]
