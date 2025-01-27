@@ -169,7 +169,6 @@ theorem abs_mod'_le (a b : ℤ) (h : 0 < b) : |mod' a b| ≤ b / 2 := by
   have := Int.emod_lt_of_pos (a + b / 2) h
   have := Int.ediv_add_emod b 2
   have := Int.emod_lt_of_pos b zero_lt_two
-  revert this; intro this -- FIXME, this should not be needed
   linarith
 
 theorem mod'_eq (a b : ℤ) : mod' a b = a - b * div' a b := by linarith [div'_add_mod' a b]
@@ -178,7 +177,31 @@ end Int
 
 theorem sq_add_sq_eq_zero {α : Type*} [LinearOrderedRing α] (x y : α) :
     x ^ 2 + y ^ 2 = 0 ↔ x = 0 ∧ y = 0 := by
-  sorry
+  constructor
+  · intro h
+    have aux_x : x = 0 := by
+      have h' : x ^ 2 = 0 := by
+          apply le_antisymm
+          . rw [← h]
+            apply le_add_of_nonneg_right
+            apply sq_nonneg
+          . apply sq_nonneg
+      apply pow_eq_zero h'
+    constructor
+    · apply aux_x
+    rw [add_comm] at h
+    have aux_y : y = 0 := by
+      have h' : y ^ 2 = 0 := by
+        apply le_antisymm
+        . rw [← h]
+          apply le_add_of_nonneg_right
+          apply sq_nonneg
+        . apply sq_nonneg
+      apply pow_eq_zero h'
+    apply aux_y
+  rintro ⟨rfl, rfl⟩
+  norm_num
+
 namespace GaussInt
 
 def norm (x : GaussInt) :=
@@ -186,13 +209,31 @@ def norm (x : GaussInt) :=
 
 @[simp]
 theorem norm_nonneg (x : GaussInt) : 0 ≤ norm x := by
-  sorry
+  apply add_nonneg
+  apply sq_nonneg
+  apply sq_nonneg
+
 theorem norm_eq_zero (x : GaussInt) : norm x = 0 ↔ x = 0 := by
-  sorry
+  rw [norm]
+  rw [sq_add_sq_eq_zero]
+  rw [GaussInt.ext_iff]
+  constructor
+  . intro zero
+    apply zero
+  . intro zero
+    apply zero
+
 theorem norm_pos (x : GaussInt) : 0 < norm x ↔ x ≠ 0 := by
-  sorry
+  rw [lt_iff_le_and_ne]
+  rw [ne_comm]
+  rw [Ne]
+  rw [norm_eq_zero]
+  simp
+
 theorem norm_mul (x y : GaussInt) : norm (x * y) = norm x * norm y := by
-  sorry
+  simp [norm]
+  ring
+
 def conj (x : GaussInt) : GaussInt :=
   ⟨x.re, -x.im⟩
 
