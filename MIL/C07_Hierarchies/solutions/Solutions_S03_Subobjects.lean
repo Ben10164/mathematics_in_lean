@@ -81,14 +81,14 @@ instance [Group G] : SubgroupClass₁ (Subgroup₁ G) G :=
   inv_mem := Subgroup₁.inv_mem }
 
 
-instance [Monoid M] : Inf (Submonoid₁ M) :=
+instance [Monoid M] : Min (Submonoid₁ M) :=
   ⟨fun S₁ S₂ ↦
     { carrier := S₁ ∩ S₂
       one_mem := ⟨S₁.one_mem, S₂.one_mem⟩
       mul_mem := fun ⟨hx, hx'⟩ ⟨hy, hy'⟩ ↦ ⟨S₁.mul_mem hx hy, S₂.mul_mem hx' hy'⟩ }⟩
 
 
-example [Monoid M] (N P : Submonoid₁ M) : Submonoid₁ M := N
+example [Monoid M] (N P : Submonoid₁ M) : Submonoid₁ M := N ⊓ P
 
 
 def Submonoid.Setoid [CommMonoid M] (N : Submonoid M) : Setoid M  where

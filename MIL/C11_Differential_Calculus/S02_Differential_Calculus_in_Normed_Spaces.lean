@@ -149,8 +149,8 @@ example (n : ℕ) (f : E → F) : E → E[×n]→L[𝕜] F :=
 
 example (n : ℕ∞) {f : E → F} :
     ContDiff 𝕜 n f ↔
-      (∀ m : ℕ, (m : ℕ∞) ≤ n → Continuous fun x ↦ iteratedFDeriv 𝕜 m f x) ∧
-        ∀ m : ℕ, (m : ℕ∞) < n → Differentiable 𝕜 fun x ↦ iteratedFDeriv 𝕜 m f x :=
+      (∀ m : ℕ, (m : WithTop ℕ) ≤ n → Continuous fun x ↦ iteratedFDeriv 𝕜 m f x) ∧
+        ∀ m : ℕ, (m : WithTop ℕ) < n → Differentiable 𝕜 fun x ↦ iteratedFDeriv 𝕜 m f x :=
   contDiff_iff_continuous_differentiable
 
 example {𝕂 : Type*} [RCLike 𝕂] {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕂 E] {F : Type*}

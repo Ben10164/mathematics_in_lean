@@ -1,6 +1,7 @@
 import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 import Mathlib.LinearAlgebra.Eigenspace.Minpoly
 import Mathlib.LinearAlgebra.Charpoly.Basic
+import Mathlib.Data.Complex.FiniteDimensional
 
 import MIL.Common
 
@@ -8,13 +9,13 @@ import MIL.Common
 section matrices
 
 -- Adding vectors
-#eval !![1, 2] + !![3, 4]  -- !![4, 6]
+#eval ![1, 2] + ![3, 4]  -- ![4, 6]
 
 -- Adding matrices
 #eval !![1, 2; 3, 4] + !![3, 4; 5, 6]  -- !![4, 6; 8, 10]
 
 -- Multiplying matrices
-#eval !![1, 2; 3, 4] * !![3, 4; 5, 6]  -- !![4, 6; 8, 10]
+#eval !![1, 2; 3, 4] * !![3, 4; 5, 6]  -- !![13, 16; 29, 36]
 
 open Matrix
 
@@ -211,8 +212,8 @@ example : Module.finrank ℂ ℂ = 1 :=
   Module.finrank_self ℂ
 
 -- But as a real vector space it has dimension two.
-example : Module.finrank ℝ ℂ = 2 := by
-  rw [Module.finrank_eq_card_basis Complex.basisOneI, Fintype.card_fin]
+example : Module.finrank ℝ ℂ = 2 :=
+  Complex.finrank_real_complex
 
 
 example [FiniteDimensional K V] : 0 < Module.finrank K V ↔ Nontrivial V  :=
