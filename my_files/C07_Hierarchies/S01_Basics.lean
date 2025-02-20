@@ -108,18 +108,28 @@ export DiaOneClass₁ (one_dia dia_one)
 export Semigroup₁ (dia_assoc)
 export Group₁ (inv_dia)
 
+#check inv_dia
+#check left_inv_eq_right_inv
+#check left_inv_eq_right_inv₁
+#check one_dia
+#check dia_one
 
 example {M : Type} [Monoid₁ M] {a b c : M} (hba : b ⋄ a = 𝟙) (hac : a ⋄ c = 𝟙) : b = c := by
   rw [← one_dia c, ← hba, dia_assoc, hac, dia_one b]
 
 
-lemma inv_eq_of_dia [Group₁ G] {a b : G} (h : a ⋄ b = 𝟙) : a⁻¹ = b :=
-  sorry
+lemma inv_eq_of_dia [Group₁ G] {a b : G} (h : a ⋄ b = 𝟙) : a⁻¹ = b := by
+  apply left_inv_eq_right_inv₁
+  . apply inv_dia a
+  . apply h
 
-lemma dia_inv [Group₁ G] (a : G) : a ⋄ a⁻¹ = 𝟙 :=
-  sorry
 
-
+lemma dia_inv [Group₁ G] (a : G) : a ⋄ a⁻¹ = 𝟙 := by
+  rw [← inv_dia a⁻¹]
+  have h : a⁻¹⁻¹ = a := by
+    rw [inv_eq_of_dia]
+    apply inv_dia
+  rw [h]
 
 
 class AddSemigroup₃ (α : Type) extends Add α where
@@ -173,21 +183,40 @@ attribute [simp] Group₃.inv_mul AddGroup₃.neg_add
 
 
 @[to_additive]
-lemma inv_eq_of_mul [Group₃ G] {a b : G} (h : a * b = 1) : a⁻¹ = b :=
-  sorry
+lemma inv_eq_of_mul [Group₃ G] {a b : G} (h : a * b = 1) : a⁻¹ = b := by
+  apply left_inv_eq_right_inv'
+  . apply Group₃.inv_mul a
+  . apply h
 
 
 @[to_additive (attr := simp)]
 lemma Group₃.mul_inv {G : Type} [Group₃ G] {a : G} : a * a⁻¹ = 1 := by
-  sorry
+  rw [← inv_mul a⁻¹]
+  have h : a⁻¹⁻¹ = a := by
+    rw [inv_eq_of_mul]
+    apply inv_mul
+  rw [h]
+
+#check mul_assoc₃
+#check congr_arg
 
 @[to_additive]
 lemma mul_left_cancel₃ {G : Type} [Group₃ G] {a b c : G} (h : a * b = a * c) : b = c := by
-  sorry
+  rw [← one_mul b]
+  rw [← one_mul c]
+  rw [← Group₃.inv_mul a]
+  rw [mul_assoc₃ a⁻¹ a b]
+  rw [h]
+  rw [← mul_assoc₃ a⁻¹ a c]
 
 @[to_additive]
 lemma mul_right_cancel₃ {G : Type} [Group₃ G] {a b c : G} (h : b*a = c*a) : b = c := by
-  sorry
+  rw [← mul_one b]
+  rw [← mul_one c]
+  rw [← Group₃.mul_inv]
+  rw [← mul_assoc₃ b a a⁻¹]
+  rw [h]
+  rw [← mul_assoc₃ c a a⁻¹]
 
 class AddCommGroup₃ (G : Type) extends AddGroup₃ G, AddCommMonoid₃ G
 
@@ -205,7 +234,36 @@ class Ring₃ (R : Type) extends AddGroup₃ R, Monoid₃ R, MulZeroClass R wher
 instance {R : Type} [Ring₃ R] : AddCommGroup₃ R :=
 { Ring₃.toAddGroup₃ with
   add_comm := by
-    sorry }
+    intro a b
+    have : a + (a + b + b) = a + (b + a + b) := calc
+      a + (a + b + b) = (a + a) + (b + b) := by
+        rw [← add_assoc₃ a (a + b) b]
+        rw [← add_assoc₃ a a b]
+        rw [← add_assoc₃ (a + a) b b]
+      _ = (1 * a + 1 * a) + (1 * b + 1 * b) := by
+        rw [one_mul a]
+        rw [one_mul b]
+      _ = (1 + 1) * a + (1 + 1) * b := by
+        rw [Ring₃.right_distrib 1 1 a]
+        rw [Ring₃.right_distrib 1 1 b]
+      _ = (1 + 1) * (a + b) := by
+        rw [Ring₃.left_distrib (1 + 1) a b]
+      _ = 1 * (a + b) + 1 * (a + b) := by
+        rw [Ring₃.right_distrib 1 1 (a + b)]
+      _ = (a + b) + (a + b) := by
+        rw [one_mul]
+      _ = a + (b + a + b) := by
+        rw [← add_assoc₃ (a + b) a b]
+        rw [← add_assoc₃ a (b + a) b]
+        rw [← add_assoc₃ a b a]
+
+
+    apply add_right_cancel₃ ?_ -- a + b + x = b + a + x
+    apply b -- a + b + b = b + a + b
+    apply add_left_cancel₃ ?_ -- x + (a + b + b) = x + (b + a + b)
+    apply a -- a + (a + b + b) = a + (b + a + b)
+    apply this
+}
 
 instance : Ring₃ ℤ where
   add := (· + ·)
