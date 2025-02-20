@@ -146,7 +146,7 @@ class AddMonoid₃ (α : Type) extends AddSemigroup₃ α, AddZeroClass α
 @[to_additive AddMonoid₃]
 class Monoid₃ (α : Type) extends Semigroup₃ α, MulOneClass α
 
-attribute [to_additive existing] Monoid₃.toMulOneClass
+-- attribute [to_additive existing] Monoid₃.toMulOneClass
 
 export Semigroup₃ (mul_assoc₃)
 export AddSemigroup₃ (add_assoc₃)
@@ -329,8 +329,12 @@ def zsmul₁ {M : Type*} [Zero M] [Add M] [Neg M] : ℤ → M → M
 
 instance abGrpModule (A : Type) [AddCommGroup₃ A] : Module₁ ℤ A where
   smul := zsmul₁
-  zero_smul := sorry
-  one_smul := sorry
+  zero_smul := by
+    intros
+    sorry
+  one_smul := by
+    intros
+    sorry
   mul_smul := sorry
   add_smul := sorry
   smul_add := sorry
