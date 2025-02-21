@@ -327,21 +327,6 @@ def zsmul₁ {M : Type*} [Zero M] [Add M] [Neg M] : ℤ → M → M
   | Int.ofNat n, a => nsmul₁ n a
   | Int.negSucc n, a => -nsmul₁ n.succ a
 
-instance abGrpModule (A : Type) [AddCommGroup₃ A] : Module₁ ℤ A where
-  smul := zsmul₁
-  zero_smul := by
-    intros
-    sorry
-  one_smul := by
-    intros
-    sorry
-  mul_smul := sorry
-  add_smul := sorry
-  smul_add := sorry
-
-#synth Module₁ ℤ ℤ -- abGrpModule ℤ
-
-
 class AddMonoid₄ (M : Type) extends AddSemigroup₃ M, AddZeroClass M where
   /-- Multiplication by a natural number. -/
   nsmul : ℕ → M → M := nsmul₁
