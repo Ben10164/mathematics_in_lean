@@ -69,7 +69,23 @@ def Submonoid.Setoid [CommMonoid M] (N : Submonoid M) : Setoid M  where
     refl := fun x ↦ ⟨1, N.one_mem, 1, N.one_mem, rfl⟩
     symm := fun ⟨w, hw, z, hz, h⟩ ↦ ⟨z, hz, w, hw, h.symm⟩
     trans := by
-      sorry
+      rintro a b c
+      rintro ⟨w, hw, z, hz, h⟩
+      rintro ⟨w', hw', z', hz', h'⟩
+      -- I actually did this out of order, so read the portion for mul that i write later
+      -- its alot of text, you cant miss it
+      use w * w'
+      use N.mul_mem hw hw'
+      use z * z'
+      use N.mul_mem hz hz'
+      rw [← mul_assoc a w w']
+      rw [h]
+      rw [mul_comm b z]
+      rw [mul_assoc z b w']
+      rw [h']
+      rw [mul_comm z (c * z')]
+      rw [mul_assoc c z' z]
+      rw [mul_comm z' z]
   }
 
 instance [CommMonoid M] : HasQuotient M (Submonoid M) where
@@ -77,14 +93,70 @@ instance [CommMonoid M] : HasQuotient M (Submonoid M) where
 
 def QuotientMonoid.mk [CommMonoid M] (N : Submonoid M) : M → M ⧸ N := Quotient.mk N.Setoid
 
+set_option linter.unusedTactic false
+
 instance [CommMonoid M] (N : Submonoid M) : Monoid (M ⧸ N) where
-  mul := Quotient.map₂' (· * ·) (by
-      sorry
-        )
+  mul := Quotient.map₂ (· * ·) (by
+    rintro a₁ b₁
+    rintro ⟨w, hw, z, hz, ha⟩
+    rintro a₂ b₂
+    rintro ⟨w', hw', z', hz', hb⟩
+    simp
+    -- Note that ha includes w and hb includes w', so lets introduce those into this equation
+    -- we say that there exists a Z where a₁ * a₂ * (w * w') = b₁ * b₂ * z
+    use w*w'
+    -- However, we have to prove that w * w' is inside Submonoid M in the first place
+    #check hw
+    #check hw'
+    -- we can prove this because a submonoid is closed under multiplication, and both w and w'
+    -- are members of N as per hw and hw' (Submonoid M)
+    #check N.mul_mem hw hw'
+    use N.mul_mem hw hw'
+    -- now we are left to prove that there exists a z also inside N
+
+    -- like before, we can note that ha includes z and hb includes z'
+    -- so lets introduce them as z itself
+    use z*z'
+    -- same as before, we need to prove that z * z' ∈ N
+    #check hz
+    #check hz'
+    use N.mul_mem hz hz'
+
+    -- Now we can get started on some rewrites and such to get it to a place we want :)
+    -- We can see that hb is looking for a₂ * w', so lets switch w and w'
+    rw [mul_comm w w']
+    -- now lets get the parenthesis in the right spots to do the replace with hb
+    rw [← mul_assoc (a₁ * a₂) w' w]
+    rw [mul_assoc a₁ a₂ w']
+    rw [hb]
+    -- now we want to turn the remaining a₁ and w into a b₁ and z
+    -- and we can see that ha does just that, so lets reorder some things
+    rw [mul_comm a₁ (b₂ * z')]
+    rw [mul_assoc (b₂ * z') a₁ w]
+    rw [ha]
+    -- and lastly, we just need to reoder it to be the same as the right :)
+    rw [mul_comm (b₂ * z') (b₁ * z)]
+    rw [mul_assoc b₁ z (b₂ * z')]
+    rw [mul_comm z (b₂ * z')]
+    rw [mul_assoc b₂ z' z]
+    rw [mul_comm z' z]
+    rw [← mul_assoc b₁ b₂ (z * z')]
+  )
   mul_assoc := by
-      sorry
-  one := QuotientMonoid.mk N 1
+    rintro ⟨a⟩ ⟨b⟩ ⟨c⟩
+    apply Quotient.sound
+    simp
+    rw [mul_assoc a b c]
+    apply @Setoid.refl M N.Setoid
+  one := by
+    apply QuotientMonoid.mk N 1
   one_mul := by
-      sorry
+    rintro ⟨a⟩
+    apply @Quotient.sound
+    simp
+    apply @Setoid.refl M N.Setoid
   mul_one := by
-      sorry
+    rintro ⟨a⟩
+    apply Quotient.sound
+    simp
+    apply @Setoid.refl M N.Setoid
