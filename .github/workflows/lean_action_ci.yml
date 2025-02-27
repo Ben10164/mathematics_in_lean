@@ -12,3 +12,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: leanprover/lean-action@v1
+        with:
+          build: "true"
+          test: "false"
+          lint: "true"
+          use-mathlib-cache: "true"
+          lean4checker: "true"
+          use-github-cache: "true"
