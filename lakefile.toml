@@ -1,6 +1,7 @@
 name = "ben_mil"
 version = "0.7.4"
 defaultTargets = ["my_files"]
+lintDriver = "Linter"
 
 [[lean_lib]]
 name = "my_files"
@@ -31,3 +32,8 @@ relaxedAutoImplicit = false
 name = "mathlib"
 git = "https://github.com/leanprover-community/mathlib4"
 rev = "v4.16.0"
+
+[[lean_exe]]
+name = "Linter"
+srcDir = "Random"
+supportInterpreter = true
