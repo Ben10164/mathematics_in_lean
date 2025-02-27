@@ -17,5 +17,3 @@ jobs:
           test: "false"
           lint: "true"
           use-mathlib-cache: "true"
-          lean4checker: "true"
-          use-github-cache: "true"
