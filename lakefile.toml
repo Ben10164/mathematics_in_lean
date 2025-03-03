@@ -1,5 +1,5 @@
 name = "ben_mil"
-version = "0.8.2"
+version = "0.8.3"
 defaultTargets = ["my_files"]
 lintDriver = "Linter"
 
