@@ -23,8 +23,8 @@ import my_files.C06_Structures.S03_Building_the_Gaussian_Integers
 import my_files.C07_Hierarchies.S01_Basics
 import my_files.C07_Hierarchies.S02_Morphisms
 import my_files.C07_Hierarchies.S03_Subobjects
--- import my_files.C08_Groups_and_Rings.S01_Groups
--- import my_files.C08_Groups_and_Rings.S02_Rings
+import my_files.C08_Groups_and_Rings.S01_Groups
+import my_files.C08_Groups_and_Rings.S02_Rings
 -- import my_files.C09_Linear_Algebra.S01_Vector_Spaces
 -- import my_files.C09_Linear_Algebra.S02_Subspaces
 -- import my_files.C09_Linear_Algebra.S03_Endomorphisms
