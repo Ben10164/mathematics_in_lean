@@ -255,7 +255,7 @@ def myMorphism : FreeGroup S →* Perm (Fin 5) :=
 def myGroup := PresentedGroup {.of () ^ 3} deriving Group
 
 def myMap : Unit → Perm (Fin 5)
-| () => c[1, 2, 3]
+| _ => c[1, 2, 3]
 
 lemma compat_myMap :
     ∀ r ∈ ({.of () ^ 3} : Set (FreeGroup Unit)), FreeGroup.lift myMap r = 1 := by
