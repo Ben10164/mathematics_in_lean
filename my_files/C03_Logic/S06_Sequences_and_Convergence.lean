@@ -184,7 +184,6 @@ theorem convergesTo_mul {s t : ℕ → ℝ} {a b : ℝ}
     apply aux cs
     convert convergesTo_add ct (convergesTo_const (-b))
     ring
-  have := convergesTo_add h₁ (convergesTo_mul_const b cs)
   convert convergesTo_add h₁ (convergesTo_mul_const b cs) using 1
   · ext; ring
   ring

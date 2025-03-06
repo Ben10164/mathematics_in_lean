@@ -6,9 +6,23 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  Build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
       - uses: leanprover/lean-action@v1
+        with:
+          build: "true"
+          lint: "false"
+          use-mathlib-cache: "true"
+          
+  Lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+        with:
+          build: "true"
+          test: "false"
+          lint: "true"
+          use-mathlib-cache: "true"
