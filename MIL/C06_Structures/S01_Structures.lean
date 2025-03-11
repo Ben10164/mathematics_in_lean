@@ -1,5 +1,5 @@
 import MIL.Common
-import Mathlib.Algebra.BigOperators.Ring
+import Mathlib.Algebra.BigOperators.Ring.List
 import Mathlib.Data.Real.Basic
 
 namespace C06S01
@@ -206,4 +206,3 @@ variable (s : StdSimplex)
 #check s.2
 
 end
-

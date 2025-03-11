@@ -1,5 +1,5 @@
 import MIL.Common
-import Mathlib.Algebra.BigOperators.Ring
+import Mathlib.Algebra.BigOperators.Ring.List
 import Mathlib.Data.Real.Basic
 
 namespace C06S01
@@ -97,4 +97,3 @@ def weightedAverage {n : ℕ} (lambda : Real) (lambda_nonneg : 0 ≤ lambda) (la
     simp [a.sum_eq_one, b.sum_eq_one]
 
 end StandardSimplex
-

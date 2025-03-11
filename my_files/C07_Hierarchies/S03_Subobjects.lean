@@ -110,8 +110,11 @@ instance [CommMonoid M] (N : Submonoid M) : Monoid (M ⧸ N) where
     #check hw'
     -- we can prove this because a submonoid is closed under multiplication, and both w and w'
     -- are members of N as per hw and hw' (Submonoid M)
+    #check N.mul_mem
+    #check N.mul_mem hw
     #check N.mul_mem hw hw'
     use N.mul_mem hw hw'
+
     -- now we are left to prove that there exists a z also inside N
 
     -- like before, we can note that ha includes z and hb includes z'
@@ -154,9 +157,7 @@ instance [CommMonoid M] (N : Submonoid M) : Monoid (M ⧸ N) where
     rintro ⟨a⟩
     apply @Quotient.sound
     simp
-    apply @Setoid.refl M N.Setoid
   mul_one := by
     rintro ⟨a⟩
     apply Quotient.sound
     simp
-    apply @Setoid.refl M N.Setoid
