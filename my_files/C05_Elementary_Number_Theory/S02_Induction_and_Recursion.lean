@@ -1,4 +1,4 @@
-import MIL.Common
+import my_files.Common
 
 example (n : Nat) : n.succ ≠ Nat.zero :=
   Nat.succ_ne_zero n

@@ -1,4 +1,4 @@
-import MIL.Common
+import my_files.Common
 
 -- An example.
 example (a b c : ℝ) : a * b * c = b * (a * c) := by

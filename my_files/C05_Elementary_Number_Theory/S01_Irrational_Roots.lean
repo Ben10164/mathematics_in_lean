@@ -1,4 +1,4 @@
-import MIL.Common
+import my_files.Common
 
 #print Nat.Coprime
 
@@ -32,7 +32,7 @@ example (p : ℕ) (prime_p : Nat.Prime p) : ∀ m : ℕ, m ∣ p → m = 1 ∨ m
 
 example : Nat.Prime 17 := by norm_num
 
--- commonly used
+-- my_files.Commonly used
 example : Nat.Prime 2 :=
   Nat.prime_two
 
@@ -174,7 +174,7 @@ example {m n k r : ℕ} (nnz : n ≠ 0) (pow_eq : m ^ k = r * n ^ k) {p : ℕ} :
   have : r.succ.factorization p = k * m.factorization p - k * n.factorization p := by
     rw [← eq1, pow_eq, eq2, add_comm, Nat.add_sub_cancel]
   rw [this]
-  apply Nat.dvd_sub'
+  apply Nat.dvd_sub
   apply dvd_mul_right
   apply dvd_mul_right
 

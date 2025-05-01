@@ -1,6 +1,5 @@
-import MIL.Common
+import my_files.Common
 import Mathlib.Algebra.BigOperators.Ring.List
-import Mathlib.Data.Real.Basic
 
 set_option autoImplicit true
 
@@ -37,13 +36,20 @@ class Dia₁ (α : Type) where
 infixl:70 " ⋄ "   => Dia₁.dia
 
 
-class Semigroup₁ (α : Type) where
+class Semigroup₀ (α : Type) where
   toDia₁ : Dia₁ α
   /-- Diamond is associative -/
   dia_assoc : ∀ a b c : α, a ⋄ b ⋄ c = a ⋄ (b ⋄ c)
 
 
-attribute [instance] Semigroup₁.toDia₁
+attribute [instance] Semigroup₀.toDia₁
+
+example {α : Type} [Semigroup₀ α] (a b : α) : α := a ⋄ b
+
+
+class Semigroup₁ (α : Type) extends toDia₁ : Dia₁ α where
+  /-- Diamond is associative -/
+  dia_assoc : ∀ a b c : α, a ⋄ b ⋄ c = a ⋄ (b ⋄ c)
 
 example {α : Type} [Semigroup₁ α] (a b : α) : α := a ⋄ b
 
@@ -51,8 +57,6 @@ example {α : Type} [Semigroup₁ α] (a b : α) : α := a ⋄ b
 class Semigroup₂ (α : Type) extends Dia₁ α where
   /-- Diamond is associative -/
   dia_assoc : ∀ a b c : α, a ⋄ b ⋄ c = a ⋄ (b ⋄ c)
-
-example {α : Type} [Semigroup₂ α] (a b : α) : α := a ⋄ b
 
 class DiaOneClass₁ (α : Type) extends One₁ α, Dia₁ α where
   /-- One is a left neutral element for diamond. -/
@@ -102,8 +106,6 @@ class Group₁ (G : Type) extends Monoid₁ G, Inv₁ G where
 
 lemma left_inv_eq_right_inv₁ {M : Type} [Monoid₁ M] {a b c : M} (hba : b ⋄ a = 𝟙) (hac : a ⋄ c = 𝟙) : b = c := by
   rw [← DiaOneClass₁.one_dia c, ← hba, Semigroup₁.dia_assoc, hac, DiaOneClass₁.dia_one b]
-
-
 export DiaOneClass₁ (one_dia dia_one)
 export Semigroup₁ (dia_assoc)
 export Group₁ (inv_dia)
@@ -151,10 +153,14 @@ class Monoid₃ (α : Type) extends Semigroup₃ α, MulOneClass α
 export Semigroup₃ (mul_assoc₃)
 export AddSemigroup₃ (add_assoc₃)
 
+set_option linter.unreachableTactic false
+
 whatsnew in
 @[to_additive]
 lemma left_inv_eq_right_inv' {M : Type} [Monoid₃ M] {a b c : M} (hba : b * a = 1) (hac : a * c = 1) : b = c := by
   rw [← one_mul c, ← hba, mul_assoc₃, hac, mul_one b]
+
+set_option linter.unreachableTactic true
 
 #check left_neg_eq_right_neg'
 
