@@ -16,7 +16,6 @@
         // "lakefile.lean": true,
         // "lean-toolchain": true,
         "mathematics_in_lean.pdf": true,
-        // "MIL.lean": true,
         "README.md":true,
 	".lake": true,
 	".devcontainer": true,
@@ -37,8 +36,9 @@
     "files.trimFinalNewlines": true,
     "editor.rulers" : [100],
     "lean4.infoview.emphasizeFirstGoal": true,
-    "lean4.infoview.showExpectedType": false,
     "lean4.input.customTranslations": {
         "jesus": "✝"
-    }
+    },
+    "lean4.alwaysAskBeforeInstallingLeanVersions": true,
+    "lean4.fallBackToStringOccurrenceHighlighting": true
 }

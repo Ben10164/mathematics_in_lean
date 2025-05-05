@@ -31,52 +31,57 @@ Return an array of the modules to lint.
 
 If `specifiedModule` is not `none` return an array containing only `specifiedModule`.
 Otherwise, resolve the default root modules from the Lake workspace. -/
-def determineModulesToLint : IO (Array Name) := do
-    println!"Automatically detecting modules to lint"
-    let defaultModules ← resolveDefaultRootModules
-    println!"Default modules: {defaultModules}"
-    return defaultModules
+def determineModulesToLint  : IO (Array Name) := do
+  println!"Automatically detecting modules to lint"
+  let defaultModules ← resolveDefaultRootModules
+  println!"Default modules: {defaultModules}"
+  return defaultModules
 
-/-- Run the Batteries linter on a given module and update the linter if `update` is `true`. -/
 unsafe def runLinterOnModule (module : Name): IO Unit := do
   initSearchPath (← findSysroot)
+    -- run `lake build module`
+  let child ← IO.Process.spawn {
+    cmd := (← IO.getEnv "LAKE").getD "lake"
+    args := #["build", s!"+{module}", "-q"]
+    stdin := .null
+  }
+  _ ← child.wait
   -- If the linter is being run on a target that doesn't import `Batteries.Tactic.List`,
   -- the linters are ineffective. So we import it here.
   let lintModule := `Batteries.Tactic.Lint
-  let child ← IO.Process.spawn {
-    cmd := (← IO.getEnv "LAKE").getD "lake"
-    args := #["build", s!"+{lintModule}"]
-    stdin := .null
-  }
-  _ ← child.wait
-  let child ← IO.Process.spawn {
-    cmd := (← IO.getEnv "LAKE").getD "lake"
-    args := #["build", s!"+{module}" , "--log-level=error"]
-    stdin := .null
-  }
-  _ ← child.wait
+  let lintFile ← findOLean lintModule
+  unless (← lintFile.pathExists) do
+    let child ← IO.Process.spawn {
+      cmd := (← IO.getEnv "LAKE").getD "lake"
+      args := #["build", s!"+{lintModule}"]
+      stdin := .null
+    }
+    _ ← child.wait
   let nolints ← pure #[]
   unsafe Lean.enableInitializersExecution
-  let env ← importModules #[module, lintModule] {} (trustLevel := 1024)
-  Prod.fst <$> (CoreM.toIO · { fileName := "", fileMap := default } { env }) do
+  let env ← importModules #[module, lintModule] {} (trustLevel := 1024) (loadExts := true)
+  let ctx := { fileName := "", fileMap := default }
+  let state := { env }
+  Prod.fst <$> (CoreM.toIO · ctx state) do
     let decls ← getDeclsInPackage module.getRoot
     let linters ← getChecks (slow := true) (runAlways := none) (runOnly := [
-      "simpVarHead".toName,
-      -- "docBlame".toName,
-      "simpComm".toName,
-      "defLemma".toName,
-      "simpNF".toName,
-      "unusedHavesSuffices".toName,
-      "deprecatedNoSince".toName,
-      "unusedArguments".toName,
-      "nonClassInstance".toName,
-      "structureInType".toName,
       "checkType".toName,
       "checkUnivs".toName,
+      "defLemma".toName,
+      -- "docBlame".toName,
+      -- "docBlameThm".toName,
       "dupNamespace".toName,
+      "explicitVarsOfIff".toName,
+      "impossibleInstance".toName,
+      "nonClassInstance".toName,
+      "simpComm".toName,
+      "simpNF".toName,
+      "simpVarHead".toName,
       "synTaut".toName,
-      "impossibleInstance".toName
+      "unusedArguments".toName,
+      "unusedHavesSuffices".toName
     ])
+
     let results ← lintCore decls linters
     let results := results.map fun (linter, decls) =>
       .mk linter <| nolints.foldl (init := decls) fun decls (linter', decl') =>

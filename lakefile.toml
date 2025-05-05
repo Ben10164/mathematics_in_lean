@@ -8,7 +8,7 @@ name = "my_files"
 pp.unicode.fun = true
 autoImplicit = false
 relaxedAutoImplicit = false
-leanOptions = { linter.unusedVariables = false, weak.linter.unusedTactic = false }
+leanOptions = { linter.unusedVariables = false, weak.linter.unusedTactic = false, linter.missingDocs = false }
 
 [[lean_lib]]
 name = "Random"

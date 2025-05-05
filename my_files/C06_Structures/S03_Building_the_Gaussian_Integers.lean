@@ -175,7 +175,7 @@ theorem mod'_eq (a b : ℤ) : mod' a b = a - b * div' a b := by linarith [div'_a
 
 end Int
 
-theorem sq_add_sq_eq_zero {α : Type*} [Ring α] [LinearOrder α] [IsStrictOrderedRing α] (x y : α) :
+theorem sq_add_sq_eq_zero {α : Type*} [Ring α] [LinearOrder α] [IsStrictOrderedRing α] {x y : α} :
     x ^ 2 + y ^ 2 = 0 ↔ x = 0 ∧ y = 0 := by
   constructor
   · intro h
@@ -213,7 +213,9 @@ theorem norm_nonneg (x : GaussInt) : 0 ≤ norm x := by
   apply sq_nonneg
   apply sq_nonneg
 
-theorem norm_eq_zero (x : GaussInt) : norm x = 0 ↔ x = 0 := by
+variable {x : GaussInt}
+
+theorem norm_eq_zero : norm x = 0 ↔ x = 0 := by
   rw [norm]
   rw [sq_add_sq_eq_zero]
   rw [GaussInt.ext_iff]
@@ -223,7 +225,7 @@ theorem norm_eq_zero (x : GaussInt) : norm x = 0 ↔ x = 0 := by
   . intro zero
     apply zero
 
-theorem norm_pos (x : GaussInt) : 0 < norm x ↔ x ≠ 0 := by
+theorem norm_pos : 0 < norm x ↔ x ≠ 0 := by
   rw [lt_iff_le_and_ne]
   rw [ne_comm]
   rw [Ne]
@@ -295,7 +297,9 @@ theorem not_norm_mul_left_lt_norm (x : GaussInt) {y : GaussInt} (hy : y ≠ 0) :
   apply le_mul_of_one_le_right (Nat.zero_le _)
   apply Int.ofNat_le.1
   rw [coe_natAbs_norm]
-  exact Int.add_one_le_of_lt ((norm_pos _).mpr hy)
+  simp
+  apply norm_pos.mpr
+  apply hy
 
 instance : EuclideanDomain GaussInt :=
   { GaussInt.instCommRing with
