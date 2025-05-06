@@ -40,5 +40,5 @@
         "jesus": "✝"
     },
     "lean4.alwaysAskBeforeInstallingLeanVersions": true,
-    "lean4.fallBackToStringOccurrenceHighlighting": true
+    "lean4.fallBackToStringOccurrenceHighlighting": false
 }
