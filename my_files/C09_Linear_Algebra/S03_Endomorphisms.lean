@@ -4,9 +4,6 @@ import Mathlib.LinearAlgebra.Charpoly.Basic
 
 import my_files.Common
 
-
-
-
 variable {K : Type*} [Field K] {V : Type*} [AddCommGroup V] [Module K V]
 
 variable {W : Type*} [AddCommGroup W] [Module K W]
@@ -93,7 +90,65 @@ example (P Q : K[X]) (h : IsCoprime P Q) (φ : End K V) :
 
 example (P Q : K[X]) (h : IsCoprime P Q) (φ : End K V) :
     ker (aeval φ P) ⊔ ker (aeval φ Q) = ker (aeval φ (P*Q)) := by
-  sorry
+  apply le_antisymm
+  -- ⊢ ker ((aeval φ) P) ⊔ ker ((aeval φ) Q) ≤ ker ((aeval φ) (P * Q))
+  . apply sup_le
+      -- ⊢ ker ((aeval φ) P) ≤ ker ((aeval φ) (P * Q))
+      -- we want to use ker_le_ker_comp (ker f ≤ ker (g ∘ₛₗ f))
+      -- so lets go through the two goals
+    .
+      -- ker ((aeval φ) P) ≤ ker ((aeval φ) (P * Q))
+      -- lets swap the P and Q, because we want it to be in the order f g f
+      rw [mul_comm]
+      -- ⊢ ker ((aeval φ) P) ≤ ker ((aeval φ) (Q * P))
+      -- now we expand that aeval
+      rw [map_mul]
+      -- ker ((aeval φ) P) ≤ ker ((aeval φ) Q * (aeval φ) P)
+      apply LinearMap.ker_le_ker_comp ((aeval φ) P) ((aeval φ) Q)
+    .
+      -- ⊢ ker ((aeval φ) Q) ≤ ker ((aeval φ) (P * Q))
+      -- same as above, but we dont need to do the mul_comm since they are already
+      -- in the right order
+      rw[map_mul]
+      apply LinearMap.ker_le_ker_comp
+  -- time for something similar to earlier...
+  . intro x hx
+    rcases h with ⟨U, V, hUV⟩
+
+    have breakdown : x = aeval φ (U*P) x + aeval φ (V*Q) x := by
+      -- have := congr((aeval φ) $hUV.symm x)
+      have : (((aeval φ) 1) x) = (((aeval φ) (U * P + V * Q)) x) := congr((aeval φ) $hUV.symm x)
+
+      rw [map_one] at this
+      rw [End.one_apply] at this
+      rw [map_add] at this
+      apply this
+    rw [breakdown]
+    rw [add_comm]
+    apply Submodule.add_mem_sup
+    -- <;>
+    . rw [mem_ker]
+      rw [← End.mul_apply]
+      rw [← map_mul]
+      have : P*(V*Q) = V*(P*Q) := by
+        rw [mul_left_comm]
+      rw [this]
+      rw [map_mul]
+      rw [End.mul_apply]
+      rw [hx]
+      rw [map_zero]
+    . rw [mem_ker]
+      rw [← End.mul_apply]
+      rw [← map_mul]
+      have : Q*(U*P) = U*(P*Q) := by
+        rw [mul_left_comm]
+        rw [mul_comm Q P]
+      rw [this]
+      rw [map_mul]
+      rw [End.mul_apply]
+      rw [hx]
+      rw [map_zero]
+
 
 example (φ : End K V) (a : K) : φ.eigenspace a = LinearMap.ker (φ - a • 1) :=
   End.eigenspace_def
