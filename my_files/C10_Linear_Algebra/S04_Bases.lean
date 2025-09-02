@@ -5,6 +5,7 @@ import Mathlib.Data.Complex.FiniteDimensional
 
 import my_files.Common
 
+namespace Module.Basis
 
 section matrices
 
@@ -88,6 +89,7 @@ end
 end matrices
 variable {K : Type*} [Field K] {V : Type*} [AddCommGroup V] [Module K V]
 
+
 section
 
 variable {ι : Type*} (B : Basis ι K V) (v : V) (i : ι)
@@ -164,17 +166,15 @@ variable {ι' : Type*} (B' : Basis ι' K W) [Fintype ι] [DecidableEq ι] [Finty
 
 open LinearMap
 
-#check (toMatrix B B' : (V →ₗ[K] W) ≃ₗ[K] Matrix ι' ι K)
-
 open Matrix -- get access to the ``*ᵥ`` notation for multiplication between matrices and vectors.
 
-example (φ : V →ₗ[K] W) (v : V) : (toMatrix B B' φ) *ᵥ (B.repr v) = B'.repr (φ v) :=
-  toMatrix_mulVec_repr B B' φ v
+example (φ : V →ₗ[K] W) (v : V) : (φ.toMatrix B B') *ᵥ (B.repr v) = B'.repr (φ v) :=
+  φ.toMatrix_mulVec_repr B B' v
 
 
 variable {ι'' : Type*} (B'' : Basis ι'' K W) [Fintype ι''] [DecidableEq ι'']
 
-example (φ : V →ₗ[K] W) : (toMatrix B B'' φ) = (toMatrix B' B'' .id) * (toMatrix B B' φ) := by
+example (φ : V →ₗ[K] W) : (φ.toMatrix B B'') = (LinearMap.id.toMatrix B' B'') * (φ.toMatrix B B') := by
   simp
 
 end
@@ -193,11 +193,11 @@ open Module LinearMap Matrix
 #check Matrix.det_one
 
 example [Fintype ι] (B' : Basis ι K V) (φ : End K V) :
-    (toMatrix B B φ).det = (toMatrix B' B' φ).det := by
-  set M := toMatrix B B φ
-  set M' := toMatrix B' B' φ
-  set P := (toMatrix B B') LinearMap.id
-  set P' := (toMatrix B' B) LinearMap.id
+    (φ.toMatrix B B).det = (φ.toMatrix B' B').det := by
+  set M := φ.toMatrix B B
+  set M' := φ.toMatrix B' B'
+  set P := LinearMap.id.toMatrix B B'
+  set P' := LinearMap.id.toMatrix B' B
   apply det_toMatrix_eq_det_toMatrix B B' φ
 
 end
