@@ -30,7 +30,7 @@ theorem my_lemma : ∀ {x y ε : ℝ}, 0 < ε → ε ≤ 1 → |x| < ε → |y| 
         . apply abs_nonneg
         . apply abs_nonneg
     _ < 1 * ε := by
-      . rw [mul_lt_mul_right]
+      . rw [mul_lt_mul_iff_left₀]
         . apply lt_of_lt_of_le xlt
           apply ele1
         . apply epos

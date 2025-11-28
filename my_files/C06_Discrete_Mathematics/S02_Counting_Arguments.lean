@@ -1,4 +1,3 @@
-import Mathlib.Data.Fintype.BigOperators
 import Mathlib.Combinatorics.Pigeonhole
 import Mathlib.Tactic
 
@@ -61,7 +60,7 @@ example (n : ℕ) : #(triangle n) = (n + 1) * n / 2 := by
     intro x _ y _ xney
     simp [disjoint_iff_ne, xney]
   -- continue the calculation
-  transitivity (∑ i in range (n+1), i)
+  trans (Finset.sum (Finset.range (n+1)) (fun i ↦ i))
   · congr; ext i
     rw [card_image_of_injective, card_range]
     intros i1 i2; simp
@@ -126,7 +125,7 @@ example (n : ℕ) : #(triangle' n) = #(triangle n) := by
     simp [triangle, triangle', f]
     constructor
     . intro h
-      use p1, p2 - 1
+      use p2 - 1
       omega
     . simp; omega
   rw [this, card_image_of_injOn]
@@ -142,7 +141,7 @@ theorem doubleCounting {α β : Type*} (s : Finset α) (t : Finset β)
     (h_right : ∀ b ∈ t, #{a ∈ s | r a b} ≤ 1) :
     3 * #(s) ≤ #(t) := by
   calc 3 * #(s)
-      = ∑ a ∈ s, 3                               := by simp [sum_const_nat, mul_comm]
+      = ∑ a ∈ s, 3                               := by simp [mul_comm]
     _ ≤ ∑ a ∈ s, #({b ∈ t | r a b})              := sum_le_sum h_left
     _ = ∑ a ∈ s, ∑ b ∈ t, if r a b then 1 else 0 := by simp
     _ = ∑ b ∈ t, ∑ a ∈ s, if r a b then 1 else 0 := sum_comm

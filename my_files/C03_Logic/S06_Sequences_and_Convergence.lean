@@ -18,7 +18,7 @@ example (a b : ℝ) : |a| = |a - b + b| := by
   ring
 
 example {a : ℝ} (h : 1 < a) : a < a * a := by
-  convert (mul_lt_mul_right _).2 h
+  convert (mul_lt_mul_iff_left₀ _).2 h
   · rw [one_mul]
   exact lt_trans zero_lt_one h
 
@@ -86,7 +86,7 @@ theorem convergesTo_add {s t : ℕ → ℝ} {a b : ℝ}
     -- By the triangle inequality, |s n - a + (t n - b)| is less than or equal to
     -- |s n - a| + |t n - b|.
     _ ≤ |s n - a| + |t n - b| := by
-      apply abs_add
+      apply abs_add_le
 
     -- Since |s n - a| < ε / 2 and |t n - b| < ε / 2 for n ≥ Ns and n ≥ Nt respectively,
     -- it follows that |s n - a| + |t n - b| < ε / 2 + ε / 2.
@@ -144,7 +144,7 @@ theorem exists_abs_le_of_convergesTo {s : ℕ → ℝ} {a : ℝ} (cs : Converges
       left
       apply rfl
     _ ≤ |s n - a| + |a| := by
-      apply abs_add
+      apply abs_add_le
     _ < |a| + 1 := by
       linarith [h n ngt]
 
@@ -214,7 +214,7 @@ theorem convergesTo_unique {s : ℕ → ℝ} {a b : ℝ}
       congr
       ring
     _ ≤ |(-(s N - a))| + |s N - b| := by
-      apply abs_add
+      apply abs_add_le
     _ = |s N - a| + |s N - b| := by
       rw [abs_neg]
     _ < ε + ε := by

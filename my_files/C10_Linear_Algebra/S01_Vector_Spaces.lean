@@ -1,10 +1,5 @@
-import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 import Mathlib.LinearAlgebra.Eigenspace.Minpoly
 import Mathlib.LinearAlgebra.Charpoly.Basic
-
-import my_files.Common
-
-
 
 variable {K : Type*} [Field K] {V : Type*} [AddCommGroup V] [Module K V]
 

@@ -60,8 +60,6 @@ example : min a b + c = min (a + c) (b + c) := by
   apply aux
   rw [← min_add_add_right]
 
-#check (abs_add : ∀ a b : ℝ, |a + b| ≤ |a| + |b|)
-
 example : |a| - |b| ≤ |a - b| := by
   apply abs_sub_abs_le_abs_sub
 end

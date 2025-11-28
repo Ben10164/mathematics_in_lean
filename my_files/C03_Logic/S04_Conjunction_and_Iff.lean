@@ -166,7 +166,7 @@ theorem aux {x y : ℝ} (h : x ^ 2 + y ^ 2 = 0) : x = 0 :=
       apply mul_self_nonneg y
     apply pow_two_nonneg x
 
-  pow_eq_zero h'
+  eq_zero_of_pow_eq_zero h'
 
 example (x y : ℝ) : x ^ 2 + y ^ 2 = 0 ↔ x = 0 ∧ y = 0 := by
   constructor
@@ -215,13 +215,13 @@ variable {α : Type*} [PartialOrder α]
 variable (a b : α)
 
 example : a < b ↔ a ≤ b ∧ a ≠ b := by
-  rw [lt_iff_le_not_le]
+  rw [lt_iff_le_not_ge]
   constructor
   . intro ⟨aleb, nblea⟩
     rw [← lt_iff_le_and_ne]
-    apply lt_of_le_not_le aleb nblea
+    apply lt_of_le_not_ge aleb nblea
   . intro ⟨aleb, aneb⟩
-    rw [← lt_iff_le_not_le]
+    rw [← lt_iff_le_not_ge]
     apply lt_of_le_of_ne aleb aneb
 
 end
@@ -231,15 +231,14 @@ variable {α : Type*} [Preorder α]
 variable (a b c : α)
 
 example : ¬a < a := by
-  rw [lt_iff_le_not_le]
+  rw [lt_iff_le_not_ge]
   rw [not_and_not_right]
   intro alea
   apply alea
 
 example : a < b → b < c → a < c := by
-  simp only [lt_iff_le_not_le]
-  intro ⟨aleb, nblea⟩
-  intro ⟨blec, ncleb⟩
+  simp only [lt_iff_le_not_ge]
+  intro ⟨aleb, nblea⟩ ⟨blec, ncleb⟩
   constructor
   . apply le_trans aleb blec
   . rintro clea

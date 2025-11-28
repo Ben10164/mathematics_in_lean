@@ -1,5 +1,4 @@
 import my_files.Common
-import Mathlib.Topology.Instances.Real.Lemmas
 
 set_option autoImplicit true
 

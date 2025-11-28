@@ -1,7 +1,8 @@
 import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 import Mathlib.LinearAlgebra.Eigenspace.Minpoly
 import Mathlib.LinearAlgebra.Charpoly.Basic
-import Mathlib.Data.Complex.FiniteDimensional
+import Mathlib.LinearAlgebra.Complex.FiniteDimensional
+import Mathlib.LinearAlgebra.Basis.Defs
 
 import my_files.Common
 
@@ -90,7 +91,7 @@ variable {K : Type*} [Field K] {V : Type*} [AddCommGroup V] [Module K V]
 
 section
 
-variable {ι : Type*} (B : Basis ι K V) (v : V) (i : ι)
+variable {ι : Type*} (B : Module.Basis ι K V) (v : V) (i : ι)
 
 -- The basis vector with index ``i``
 #check (B i : V)
@@ -105,14 +106,14 @@ variable {ι : Type*} (B : Basis ι K V) (v : V) (i : ι)
 #check (B.repr v i : K)
 
 noncomputable example (b : ι → V) (b_indep : LinearIndependent K b)
-    (b_spans : ∀ v, v ∈ Submodule.span K (Set.range b)) : Basis ι K V :=
-  Basis.mk b_indep (fun v _ ↦ b_spans v)
+    (b_spans : ∀ v, v ∈ Submodule.span K (Set.range b)) : Module.Basis ι K V :=
+  Module.Basis.mk b_indep (fun v _ ↦ b_spans v)
 
 -- The family of vectors underlying the above basis is indeed ``b``.
 example (b : ι → V) (b_indep : LinearIndependent K b)
     (b_spans : ∀ v, v ∈ Submodule.span K (Set.range b)) (i : ι) :
-    Basis.mk b_indep (fun v _ ↦ b_spans v) i = b i :=
-  Basis.mk_apply b_indep (fun v _ ↦ b_spans v) i
+    Module.Basis.mk b_indep (fun v _ ↦ b_spans v) i = b i :=
+  Module.Basis.mk_apply b_indep (fun v _ ↦ b_spans v) i
 
 variable [DecidableEq ι]
 
@@ -158,9 +159,7 @@ example (φ ψ : V →ₗ[K] W) (h : ∀ i, φ (B i) = ψ (B i)) : φ = ψ :=
   B.ext h
 
 
-
-
-variable {ι' : Type*} (B' : Basis ι' K W) [Fintype ι] [DecidableEq ι] [Fintype ι'] [DecidableEq ι']
+variable {ι' : Type*} (B' : Module.Basis ι' K W) [Fintype ι] [DecidableEq ι] [Fintype ι'] [DecidableEq ι']
 
 open LinearMap
 
@@ -172,7 +171,7 @@ example (φ : V →ₗ[K] W) (v : V) : (toMatrix B B' φ) *ᵥ (B.repr v) = B'.r
   toMatrix_mulVec_repr B B' φ v
 
 
-variable {ι'' : Type*} (B'' : Basis ι'' K W) [Fintype ι''] [DecidableEq ι'']
+variable {ι'' : Type*} (B'' : Module.Basis ι'' K W) [Fintype ι''] [DecidableEq ι'']
 
 example (φ : V →ₗ[K] W) : (toMatrix B B'' φ) = (toMatrix B' B'' .id) * (toMatrix B B' φ) := by
   simp
@@ -226,9 +225,9 @@ example [FiniteDimensional K V] (h : 0 < Module.finrank K V) : Nontrivial V := b
   apply (Module.finrank_pos_iff (R := K)).1
   exact h
 
-variable {ι : Type*} (B : Basis ι K V)
+variable {ι : Type*} (B : Module.Basis ι K V)
 
-example [Finite ι] : FiniteDimensional K V := FiniteDimensional.of_fintype_basis B
+example [Finite ι] : FiniteDimensional K V := Module.Basis.finiteDimensional_of_finite B
 
 example [FiniteDimensional K V] : Finite ι :=
   (FiniteDimensional.fintypeBasisIndex B).finite
@@ -262,8 +261,8 @@ end
 
 universe u v -- `u` and `v` will denote universe levels
 
-variable {ι : Type u} (B : Basis ι K V)
-         {ι' : Type v} (B' : Basis ι' K V)
+variable {ι : Type u} (B : Module.Basis ι K V)
+         {ι' : Type v} (B' : Module.Basis ι' K V)
 
 example : Cardinal.lift.{v, u} (.mk ι) = Cardinal.lift.{u, v} (.mk ι') :=
   mk_eq_mk_of_basis B B'

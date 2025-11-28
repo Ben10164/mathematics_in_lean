@@ -193,8 +193,7 @@ section
 open Set Real
 
 example : InjOn log { x | x > 0 } := by
-  intro x xpos y ypos
-  intro e
+  intro x xpos y ypos e
   -- log x = log y
   calc
     x = exp (log x) := by rw [exp_log xpos]
@@ -211,8 +210,7 @@ example : range exp = { y | y > 0 } := by
   rw [exp_log ypos]
 
 example : InjOn sqrt { x | x ≥ 0 } := by
-  intro x xnonneg y ynonneg
-  intro e
+  intro x xnonneg y ynonneg e
   calc
     x = sqrt x ^ 2 := by
       rw [sq_sqrt]
@@ -224,8 +222,7 @@ example : InjOn sqrt { x | x ≥ 0 } := by
       apply ynonneg
 
 example : InjOn (fun x ↦ x ^ 2) { x : ℝ | x ≥ 0 } := by
-  intro x xnonneg y ynonneg
-  intro e
+  intro x xnonneg y ynonneg e
   dsimp at *
   calc
     x = sqrt (x ^ 2) := by

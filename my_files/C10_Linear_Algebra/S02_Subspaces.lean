@@ -1,9 +1,6 @@
-import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 import Mathlib.LinearAlgebra.Eigenspace.Minpoly
 import Mathlib.LinearAlgebra.Charpoly.Basic
-
-import my_files.Common
-
+import Mathlib.Tactic
 
 variable {K : Type*} [Field K] {V : Type*} [AddCommGroup V] [Module K V]
 
@@ -85,9 +82,6 @@ example (U : ι → Submodule K V) (h : DirectSum.IsInternal U) :
 example {ι : Type*} [DecidableEq ι] (U : ι → Submodule K V) (h : DirectSum.IsInternal U)
     {i j : ι} (hij : i ≠ j) : U i ⊓ U j = ⊥ :=
   (h.submodule_iSupIndep.pairwiseDisjoint hij).eq_bot
-
--- Those conditions characterize direct sums.
-#check DirectSum.isInternal_submodule_iff_independent_and_iSup_eq_top
 
 -- The relation with external direct sums: if a family of subspaces is
 -- in internal direct sum then the map from their external direct sum into `V`

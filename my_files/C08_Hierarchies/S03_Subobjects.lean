@@ -1,5 +1,4 @@
 import my_files.Common
-import Mathlib.GroupTheory.QuotientGroup.Basic
 
 set_option autoImplicit true
 

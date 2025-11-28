@@ -90,7 +90,7 @@ example (x : ℝ) (h : ∀ ε > 0, x < ε) : x ≤ 0 := by
   apply le_of_not_gt
   intro h'
   apply absurd h'
-  apply not_lt_of_lt
+  apply not_lt_of_ge
   /-
   case a.h
   a b : ℝ

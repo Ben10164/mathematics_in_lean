@@ -1,5 +1,4 @@
 import my_files.Common
-import Mathlib.Algebra.BigOperators.Ring.List
 
 set_option autoImplicit true
 
