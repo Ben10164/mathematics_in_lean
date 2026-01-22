@@ -157,7 +157,7 @@ section
 variable {R : Type*} [Ring R] [PartialOrder R] [IsStrictOrderedRing R]
 variable (a b c : R)
 
-#check (add_le_add_left : a ≤ b → ∀ c, c + a ≤ c + b)
+#check (add_le_add_right : a ≤ b → ∀ c, c + a ≤ c + b)
 #check (mul_pos : 0 < a → 0 < b → 0 < a * b)
 
 #check (mul_nonneg : 0 ≤ a → 0 ≤ b → 0 ≤ a * b)
@@ -168,7 +168,7 @@ theorem aux1 (h : a ≤ b) : 0 ≤ b - a := by
   rw [sub_eq_add_neg]
   rw [add_comm]
   rw [add_comm b]
-  apply add_le_add_left
+  apply add_le_add_right
   apply h
 
 theorem aux2 (h: 0 ≤ b - a) : a ≤ b := by
@@ -177,7 +177,7 @@ theorem aux2 (h: 0 ≤ b - a) : a ≤ b := by
   rw [sub_add_comm]
   rw [sub_add_eq_add_sub]
   rw [add_sub_assoc]
-  apply add_le_add_left
+  apply add_le_add_right
   apply h
 
 example (h : a ≤ b) (h' : 0 ≤ c) : a * c ≤ b * c := by
